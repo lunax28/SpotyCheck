@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckController">
    <top>
       <VBox BorderPane.alignment="CENTER">
@@ -39,19 +38,9 @@
             </MenuBar>
             <HBox>
                <children>
-                  <Label alignment="CENTER" prefHeight="27.0" prefWidth="62.0" text="Output">
+                  <TextField fx:id="outputTextField" alignment="CENTER" editable="false" prefHeight="27.0" prefWidth="373.0">
                      <HBox.margin>
-                        <Insets right="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <Button mnemonicParsing="false" onAction="#selectButton" text="Select">
-                     <HBox.margin>
-                        <Insets left="10.0" right="5.0" />
-                     </HBox.margin>
-                  </Button>
-                  <TextField fx:id="outputTextField" editable="false" prefHeight="27.0" prefWidth="373.0">
-                     <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="110.0" />
                      </HBox.margin>
                   </TextField>
                </children>
@@ -70,12 +59,12 @@
    <left>
       <VBox prefHeight="334.0" prefWidth="171.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" prefHeight="22.0" prefWidth="171.0" text="UPC">
+            <Label alignment="CENTER" prefHeight="22.0" prefWidth="171.0" text="UPC:">
                <VBox.margin>
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <TextArea fx:id="upcTextArea" prefHeight="384.0" prefWidth="166.0">
+            <TextArea fx:id="upcTextArea" prefHeight="385.0" prefWidth="166.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -91,15 +80,34 @@
          <children>
             <Button alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#checkButton" prefHeight="27.0" prefWidth="70.0" text="CHECK" textAlignment="CENTER">
                <VBox.margin>
-                  <Insets left="20.0" top="250.0" />
+                  <Insets left="85.0" top="250.0" />
                </VBox.margin>
             </Button>
             <Button mnemonicParsing="false" onAction="#getInfoButton" prefHeight="27.0" prefWidth="80.0" text="GET INFO">
                <VBox.margin>
-                  <Insets left="20.0" top="20.0" />
+                  <Insets left="80.0" top="20.0" />
                </VBox.margin>
             </Button>
          </children>
       </VBox>
    </center>
+   <right>
+      <VBox prefHeight="410.0" prefWidth="186.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="86.0" text="RESULTS:">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="45.0" top="5.0" />
+               </VBox.margin>
+            </Label>
+            <TextArea fx:id="resultsTextArea" editable="false" prefHeight="385.0" prefWidth="166.0">
+               <VBox.margin>
+                  <Insets right="10.0" top="5.0" />
+               </VBox.margin>
+            </TextArea>
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </VBox>
+   </right>
 </BorderPane>

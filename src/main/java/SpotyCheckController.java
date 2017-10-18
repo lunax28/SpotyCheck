@@ -4,6 +4,7 @@
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
 import javafx.event.ActionEvent;
@@ -28,23 +29,70 @@ public class SpotyCheckController {
     @FXML // fx:id="upcTextArea"
     private TextArea upcTextArea; // Value injected by FXMLLoader
 
+    @FXML // fx:id="resultsTextArea"
+    private TextArea resultsTextArea; // Value injected by FXMLLoader
+
+    private Scanner scanner;
+
+
+
     @FXML
     void checkButton(ActionEvent event) {
-        if(this.outputTextField.getText().isEmpty()){
+/*        if(this.outputTextField.getText().isEmpty()){
             displayErrorMessage("Make sure to add an output destination!");
-        }
+        }*/
+        this.resultsTextArea.clear();
         if(this.upcTextArea.getText().isEmpty()){
             displayErrorMessage("Make sure to add a list of UPCs first!");
         }
+        String tmp = "";
+        String link = "";
+        scanner = new Scanner(upcTextArea.getText());
+
+        while (scanner.hasNextLine()) {
+            tmp = scanner.nextLine();
+
+            System.out.println("TMP: " + tmp);
+
+            link = ("https://api.spotify.com/v1/search?q=upc:" + tmp + "&type=album");
+
+            System.out.println("LINK: " + link);
+
+            int total = model.getTotal(link);
+
+            this.resultsTextArea.appendText(tmp + ", " + total + "\n");
+
+        }
+
+
     }
 
     @FXML
     void getInfoButton(ActionEvent event) {
+        this.resultsTextArea.clear();
 
-    }
+        if(this.upcTextArea.getText().isEmpty()){
+            displayErrorMessage("Make sure to add a list of UPCs first!");
+        }
+        String tmp = "";
+        String link = "";
+        scanner = new Scanner(upcTextArea.getText());
 
-    @FXML
-    void selectButton(ActionEvent event) {
+        while (scanner.hasNextLine()) {
+            tmp = scanner.nextLine();
+
+            System.out.println("TMP: " + tmp);
+
+            link = ("https://api.spotify.com/v1/search?q=upc:" + tmp + "&type=album");
+
+            System.out.println("LINK: " + link);
+
+            String info = model.getInfo(link);
+
+            this.resultsTextArea.appendText(tmp + ", " + info + "\n");
+
+        }
+
 
     }
 
@@ -52,6 +100,7 @@ public class SpotyCheckController {
     void initialize() {
         assert outputTextField != null : "fx:id=\"outputTextField\" was not injected: check your FXML file 'spotyCheckGui.fxml'.";
         assert upcTextArea != null : "fx:id=\"upcTextArea\" was not injected: check your FXML file 'spotyCheckGui.fxml'.";
+        assert resultsTextArea != null : "fx:id=\"resultsTextArea\" was not injected: check your FXML file 'spotyCheckGui.fxml'.";
 
     }
 

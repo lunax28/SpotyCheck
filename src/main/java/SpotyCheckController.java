@@ -64,6 +64,8 @@ public class SpotyCheckController {
 
         }
 
+        this.outputTextField.setText("SUCCESS!");
+
 
     }
 
@@ -93,6 +95,8 @@ public class SpotyCheckController {
 
         }
 
+        this.outputTextField.setText("SUCCESS!");
+
 
     }
 
@@ -114,6 +118,14 @@ public class SpotyCheckController {
         alert.setContentText(textMessage);
         alert.showAndWait();
         return;
+
+    }
+
+    @FXML
+    void clearButton(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+        this.upcTextArea.clear();
 
     }
 }

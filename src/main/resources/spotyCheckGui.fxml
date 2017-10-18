@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckController">
    <top>
@@ -83,10 +84,18 @@
                   <Insets left="85.0" top="250.0" />
                </VBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#getInfoButton" prefHeight="27.0" prefWidth="80.0" text="GET INFO">
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#getInfoButton" prefHeight="27.0" prefWidth="80.0" text="GET INFO">
                <VBox.margin>
                   <Insets left="80.0" top="20.0" />
                </VBox.margin>
+            </Button>
+            <Button cancelButton="true" mnemonicParsing="false" onAction="#clearButton" text="CLEAR">
+               <VBox.margin>
+                  <Insets left="90.0" top="20.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
             </Button>
          </children>
       </VBox>

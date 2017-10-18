@@ -1,7 +1,9 @@
+import com.equilibriummusicgroup.SpotyCheck.model.Model;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
@@ -14,22 +16,26 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    Stage window;
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        window = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("spotyCheckGui.fxml"));
-        window.setTitle("Spoty Check");
-        window.setScene(new Scene(root));
-        window.show();
+    public void start(Stage primaryStage){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
+            BorderPane root = (BorderPane)loader.load();
+            SpotyCheckController controller = loader.getController() ;
+            Model model = new Model() ;
+            controller.setModel(model) ;
+            Scene scene = new Scene(root);
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public Stage getWindow() {
-        return window;
-    }
 }

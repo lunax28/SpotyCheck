@@ -39,9 +39,9 @@
             </MenuBar>
             <HBox>
                <children>
-                  <TextField fx:id="outputTextField" alignment="CENTER" editable="false" prefHeight="27.0" prefWidth="373.0">
+                  <TextField fx:id="outputTextField" alignment="CENTER" editable="false" prefHeight="27.0" prefWidth="151.0">
                      <HBox.margin>
-                        <Insets left="110.0" />
+                        <Insets left="210.0" />
                      </HBox.margin>
                   </TextField>
                </children>

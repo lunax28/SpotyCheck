@@ -54,7 +54,7 @@ public class Model {
 
         String albumName = firstItemsObj.get("name").getAsString();
 
-        artistsString.append(albumName + ", ");
+        artistsString.append(albumName + "; ");
 
         JsonArray artistsArray = firstItemsObj.get("artists").getAsJsonArray();
 

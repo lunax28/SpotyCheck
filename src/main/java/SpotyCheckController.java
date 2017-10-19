@@ -41,6 +41,7 @@ public class SpotyCheckController {
 /*        if(this.outputTextField.getText().isEmpty()){
             displayErrorMessage("Make sure to add an output destination!");
         }*/
+        this.outputTextField.clear();
         this.resultsTextArea.clear();
         if(this.upcTextArea.getText().isEmpty()){
             displayErrorMessage("Make sure to add a list of UPCs first!");
@@ -72,6 +73,7 @@ public class SpotyCheckController {
     @FXML
     void getInfoButton(ActionEvent event) {
         this.resultsTextArea.clear();
+        this.outputTextField.clear();
 
         if(this.upcTextArea.getText().isEmpty()){
             displayErrorMessage("Make sure to add a list of UPCs first!");
@@ -91,7 +93,7 @@ public class SpotyCheckController {
 
             String info = model.getInfo(link);
 
-            this.resultsTextArea.appendText(tmp + ", " + info + "\n");
+            this.resultsTextArea.appendText(tmp + "; " + info + "\n");
 
         }
 
@@ -123,7 +125,7 @@ public class SpotyCheckController {
 
     @FXML
     void clearButton(ActionEvent event) {
-
+        this.outputTextField.clear();
         this.resultsTextArea.clear();
         this.upcTextArea.clear();
 

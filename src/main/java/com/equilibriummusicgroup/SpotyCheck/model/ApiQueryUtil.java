@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.prefs.Preferences;
 
 public class ApiQueryUtil {
 
@@ -20,6 +21,8 @@ public class ApiQueryUtil {
     private String albumsJson;
     private String tokenString;
     private int responseCode;
+    //a Preferences object to store the token, avoiding repetitive calls
+    private Preferences preferences = Preferences.userNodeForPackage(ApiQueryUtil.class);
 
     public ApiQueryUtil() {
         this.link = "";
@@ -35,7 +38,7 @@ public class ApiQueryUtil {
         try {
             URL url = new URL("https://accounts.spotify.com/api/token");
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-            String basicAuth = "Basic secretKey";
+            String basicAuth = "Basic NTM0NzYyN2JkYzQ0NGEwYzg3ZWI4NGFkZTkwMTc0YzI6ZTZiMmVhNzIzYTY5NDc4MjhiNTQyMDQzM2E1MTdjYzg=";
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("POST");
             httpCon.setRequestProperty("Authorization", basicAuth);
@@ -89,7 +92,7 @@ public class ApiQueryUtil {
 
             this.responseCode = httpCon.getResponseCode();
             if (this.responseCode != 200) {
-                System.out.println("RESPONSE CODE 200!");
+                System.out.println("RESPONSE CODE: " + this.responseCode);
                 return null;
 
             }

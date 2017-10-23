@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckArtistsNameIdController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckArtistsNameIdController">
 <top>
 <VBox BorderPane.alignment="CENTER">
     <children>
@@ -81,7 +81,7 @@
     <children>
         <Button alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#checkNameButton" prefHeight="27.0" prefWidth="70.0" text="CHECK" textAlignment="CENTER">
             <VBox.margin>
-                <Insets left="85.0" top="250.0" />
+                <Insets left="85.0" top="150.0" />
             </VBox.margin>
         </Button>
         <Button cancelButton="true" mnemonicParsing="false" onAction="#clearButton" text="CLEAR">
@@ -96,14 +96,14 @@
 </VBox>
 </center>
 <right>
-<VBox prefHeight="410.0" prefWidth="186.0" BorderPane.alignment="CENTER">
+<VBox prefHeight="393.0" prefWidth="394.0" BorderPane.alignment="CENTER">
     <children>
         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="86.0" text="RESULTS:">
             <VBox.margin>
-                <Insets bottom="5.0" left="45.0" top="5.0" />
+                <Insets bottom="5.0" left="155.0" top="5.0" />
             </VBox.margin>
         </Label>
-        <TextArea fx:id="resultsTextArea" editable="false" prefHeight="385.0" prefWidth="166.0">
+        <TextArea fx:id="resultsTextArea" editable="false" prefHeight="350.0" prefWidth="384.0">
             <VBox.margin>
                 <Insets right="10.0" top="5.0" />
             </VBox.margin>
@@ -115,6 +115,9 @@
 </VBox>
 </right>
    <bottom>
-      <Button fx:id="backButtonId" mnemonicParsing="false" onAction="#backButton" text="Back" BorderPane.alignment="CENTER" />
+      <Button fx:id="backButtonId" mnemonicParsing="false" onAction="#backButton" text="&lt;- UPC" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="600.0" />
+         </BorderPane.margin></Button>
    </bottom>
         </BorderPane>

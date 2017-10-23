@@ -22,8 +22,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class SpotyCheckController {
-
+    @FXML
     private Model model;
+    @FXML
+    private Stage primaryStage;
 
     @FXML
     private Button nextButtonId;
@@ -125,9 +127,9 @@ public class SpotyCheckController {
         this.model = model;
     }
 
-/*    public void setStage(Stage primaryStage){
+   public void setStage(Stage primaryStage){
         this.primaryStage = primaryStage;
-    }*/
+    }
 
     public void displayErrorMessage(String textMessage){
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -150,14 +152,25 @@ public class SpotyCheckController {
     @FXML
     void nextButton(ActionEvent event) throws IOException {
 
-        //Parent root = FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
+        /*Parent root = FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
 
+        Stage stage = (Stage) nextButtonId.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();*/
+
+        //nextButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")));
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
+
+        Parent root = loader.load();
+        SpotyCheckArtistsNameIdController controller = loader.getController() ;
+        controller.setModel(this.model) ;
+        controller.setStage(this.primaryStage);
         //Stage stage = (Stage) nextButtonId.getScene().getWindow();
-
-        nextButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")));
-
-
-
+        Scene scene = new Scene(root);
+        this.primaryStage.setScene(scene);
+        this.primaryStage.show();
 
     }
 

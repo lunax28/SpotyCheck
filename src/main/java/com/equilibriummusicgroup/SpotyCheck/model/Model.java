@@ -7,14 +7,10 @@ import java.util.Map;
 
 public class Model {
 
-    private Map upcCheckMap;
-    private Map upcInfoMap;
     private ApiQueryUtil apiQuery;
 
 
     public Model(){
-        upcCheckMap = null;
-        upcInfoMap = null;
         this.apiQuery  = new ApiQueryUtil();
     }
 
@@ -88,5 +84,46 @@ public class Model {
         }
 
         return false;
+    }
+
+    public String getArtistInfo(String link, String tmp) {
+
+        StringBuilder artistInfoString = new StringBuilder();
+
+        JsonObject jsonResponse = apiQuery.getJson(link);
+
+        System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+
+        JsonObject artistsObj = jsonResponse.get("artists").getAsJsonObject();
+
+        JsonArray artistsArray = artistsObj.get("items").getAsJsonArray();
+
+
+        for (int i = 0; i < artistsArray.size(); i++) {
+
+            JsonObject jsonObjArr = artistsArray.get(i).getAsJsonObject();
+
+            String lowerCaseArtist = jsonObjArr.get("name").getAsString().toLowerCase();
+
+            if (tmp.toLowerCase().equals(lowerCaseArtist)) {
+
+                int popularity = jsonObjArr.get("popularity").getAsInt();
+
+                JsonObject followersObject = jsonObjArr.get("followers").getAsJsonObject();
+
+                int followers = followersObject.get("total").getAsInt();
+
+                String id = jsonObjArr.get("id").getAsString();
+
+                artistInfoString.append(lowerCaseArtist + "; " + popularity + "; " + followers + "; " + id + System.lineSeparator());
+
+                //bw.write(lowerCaseArtist + ", " + popularity + ", " + followers + System.lineSeparator());
+
+            }
+
+
+        }
+
+        return artistInfoString.toString();
     }
 }

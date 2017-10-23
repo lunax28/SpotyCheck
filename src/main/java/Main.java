@@ -27,13 +27,15 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
 
             BorderPane root = (BorderPane)loader.load();
-            SpotyCheckController controller = loader.getController() ;
+            SpotyCheckController controller = loader.getController();
             Model model = new Model() ;
             controller.setModel(model) ;
+            controller.setStage(primaryStage);
 
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.show();
+
 
         } catch(Exception e) {
             e.printStackTrace();

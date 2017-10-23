@@ -25,10 +25,12 @@ public class Main extends Application {
     public void start(Stage primaryStage){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
+
             BorderPane root = (BorderPane)loader.load();
             SpotyCheckController controller = loader.getController() ;
             Model model = new Model() ;
             controller.setModel(model) ;
+
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.show();

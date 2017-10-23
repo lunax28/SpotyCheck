@@ -119,4 +119,7 @@
          </BorderPane.margin>
       </VBox>
    </right>
+   <bottom>
+      <Button fx:id="nextButtonId" mnemonicParsing="false" onAction="#nextButton" text="Next" BorderPane.alignment="CENTER" />
+   </bottom>
 </BorderPane>

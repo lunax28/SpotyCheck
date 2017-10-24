@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
+import com.equilibriummusicgroup.SpotyCheck.model.ModelSing;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,8 +29,9 @@ public class SpotyCheckArtistsNameIdController {
     private Stage primaryStage;
 
     private Scanner scanner;
+
     @FXML
-    private Model model;
+    private ModelSing model;
 
 
     @FXML
@@ -79,7 +81,7 @@ public class SpotyCheckArtistsNameIdController {
 
             System.out.println("LINK: " + link);
 
-            String artistInfoString = model.getArtistInfo(link, tmp);
+            String artistInfoString = ModelSing.getInstance().getArtistInfo(link, tmp);
 
             if(artistInfoString.isEmpty()){
                 artistInfoString = "NOT FOUND";
@@ -113,8 +115,9 @@ public class SpotyCheckArtistsNameIdController {
     @FXML
     void backButton(ActionEvent event) throws IOException {
 
-        //backButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckGui.fxml")));
+        backButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckGui.fxml")));
 
+/*
         FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
 
         Parent root = loader.load();
@@ -125,6 +128,7 @@ public class SpotyCheckArtistsNameIdController {
         Scene scene = new Scene(root);
         this.primaryStage.setScene(scene);
         this.primaryStage.show();
+*/
 
         /*FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
 
@@ -162,7 +166,7 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-    public void setModel(Model model){
+    public void setModel(ModelSing model){
         this.model = model;
     }
 }

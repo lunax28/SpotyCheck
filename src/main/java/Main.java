@@ -1,4 +1,4 @@
-import com.equilibriummusicgroup.SpotyCheck.model.Model;
+import com.equilibriummusicgroup.SpotyCheck.model.ModelSing;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,7 +28,8 @@ public class Main extends Application {
 
             BorderPane root = (BorderPane)loader.load();
             SpotyCheckController controller = loader.getController();
-            Model model = new Model() ;
+
+            ModelSing model = ModelSing.getInstance();
             controller.setModel(model) ;
             controller.setStage(primaryStage);
 

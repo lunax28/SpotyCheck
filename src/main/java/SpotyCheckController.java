@@ -3,27 +3,30 @@
  */
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
+import com.equilibriummusicgroup.SpotyCheck.model.ApiQueryUtil;
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
+import com.equilibriummusicgroup.SpotyCheck.model.ModelSing;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class SpotyCheckController {
     @FXML
-    private Model model;
+    private ModelSing model;
     @FXML
     private Stage primaryStage;
 
@@ -72,13 +75,56 @@ public class SpotyCheckController {
 
             System.out.println("LINK: " + link);
 
-            int total = model.getTotal(link);
+            int total = 0;
+
+            try {
+                total = ModelSing.getInstance().getTotal(link);
+            } catch (Exception e) {
+                showAlertErrorDialog(e);
+
+            }
 
             this.resultsTextArea.appendText(tmp + ", " + total + "\n");
 
         }
 
         this.outputTextField.setText("SUCCESS!");
+
+
+    }
+
+    private void showAlertErrorDialog(Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("Look, an Error Dialog");
+        alert.setContentText("Ooops, there was an error!");
+
+        // Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        alert.showAndWait();
 
 
     }
@@ -104,7 +150,7 @@ public class SpotyCheckController {
 
             System.out.println("LINK: " + link);
 
-            String info = model.getInfo(link);
+            String info = ModelSing.getInstance().getInfo(link);
 
             this.resultsTextArea.appendText(tmp + "; " + info + "\n");
 
@@ -123,7 +169,7 @@ public class SpotyCheckController {
 
     }
 
-    public void setModel(Model model){
+    public void setModel(ModelSing model){
         this.model = model;
     }
 
@@ -159,9 +205,9 @@ public class SpotyCheckController {
         stage.setScene(scene);
         stage.show();*/
 
-        //nextButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")));
+        nextButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
+        /*FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
 
         Parent root = loader.load();
         SpotyCheckArtistsNameIdController controller = loader.getController() ;
@@ -170,7 +216,7 @@ public class SpotyCheckController {
         //Stage stage = (Stage) nextButtonId.getScene().getWindow();
         Scene scene = new Scene(root);
         this.primaryStage.setScene(scene);
-        this.primaryStage.show();
+        this.primaryStage.show();*/
 
     }
 

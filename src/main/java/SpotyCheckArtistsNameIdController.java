@@ -31,7 +31,7 @@ public class SpotyCheckArtistsNameIdController {
     private Scanner scanner;
 
     @FXML
-    private ModelSing model;
+    private Model model;
 
 
     @FXML
@@ -54,6 +54,7 @@ public class SpotyCheckArtistsNameIdController {
 
     @FXML
     void checkNameButton(ActionEvent event) {
+        this.outputTextField.clear();
 
         this.outputTextField.clear();
         this.resultsTextArea.clear();
@@ -109,13 +110,30 @@ public class SpotyCheckArtistsNameIdController {
 
     @FXML
     void clearButton(ActionEvent event) {
+        this.nameTextArea.clear();
+        this.outputTextField.clear();
+        this.resultsTextArea.clear();
+
 
     }
 
     @FXML
     void backButton(ActionEvent event) throws IOException {
 
-        backButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckGui.fxml")));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
+
+        Parent root = loader.load();
+
+        SpotyCheckController controller = loader.getController() ;
+        controller.setModel(this.model) ;
+
+        Stage stage = (Stage) backButtonId.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+
+
+        //backButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckGui.fxml")));
 
 /*
         FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
@@ -166,7 +184,7 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-    public void setModel(ModelSing model){
+    public void setModel(Model model){
         this.model = model;
     }
 }

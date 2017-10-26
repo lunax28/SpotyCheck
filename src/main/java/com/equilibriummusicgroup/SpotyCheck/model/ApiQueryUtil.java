@@ -38,7 +38,7 @@ public class ApiQueryUtil {
         try {
             URL url = new URL("https://accounts.spotify.com/api/token");
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-            String basicAuth = "Basic secret key";
+            String basicAuth = "Basic secretkey";
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("POST");
             httpCon.setRequestProperty("Authorization", basicAuth);
@@ -65,6 +65,16 @@ public class ApiQueryUtil {
         }
 
         JsonObject token = new JsonParser().parse(json_response).getAsJsonObject();
+
+        long expiry = System.currentTimeMillis() + (token.get("expires_in").getAsLong() * 1000);
+
+        preferences.get("token","");
+        preferences.put("token", token.get("access_token").getAsString());
+
+        preferences.getLong("expiry",0);
+        preferences.putLong("expiry", expiry);
+
+        System.out.println("TOKEN: " + token.get("access_token").getAsString());
         return token.get("access_token").getAsString();
 
     }
@@ -80,12 +90,21 @@ public class ApiQueryUtil {
             URL url = new URL(link);
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 
-            if (this.tokenString.isEmpty()) {
+            /*if (this.tokenString.isEmpty()) {
                 this.tokenString = this.getToken();
                 System.out.println("###\nREQUESTED NEW TOKEN!!!\n###");
+            }*/
+
+            String basicAuth = "";
+
+            if(preferences.get("token","").isEmpty() || preferences.getLong("expiry",0) < System.currentTimeMillis()){
+
+                System.out.println("###\nREQUESTED NEW TOKEN!!!\n###");
+                basicAuth = "Bearer " + getToken();
+            } else {
+                basicAuth = "Bearer " + preferences.get("token","");
             }
 
-            String basicAuth = "Bearer " + this.tokenString;
 
             httpCon.setRequestMethod("GET");
             httpCon.setRequestProperty("Authorization", basicAuth);

@@ -26,9 +26,7 @@ import javafx.stage.Stage;
 
 public class SpotyCheckController {
     @FXML
-    private ModelSing model;
-    @FXML
-    private Stage primaryStage;
+    private Model model;
 
     @FXML
     private Button nextButtonId;
@@ -77,12 +75,12 @@ public class SpotyCheckController {
 
             int total = 0;
 
-            try {
-                total = ModelSing.getInstance().getTotal(link);
-            } catch (Exception e) {
-                showAlertErrorDialog(e);
+            //try {
+                total = model.getTotal(link);
+            //} catch (Exception e) {
+                //showAlertErrorDialog(e);
 
-            }
+            //}
 
             this.resultsTextArea.appendText(tmp + ", " + total + "\n");
 
@@ -150,7 +148,7 @@ public class SpotyCheckController {
 
             System.out.println("LINK: " + link);
 
-            String info = ModelSing.getInstance().getInfo(link);
+            String info = model.getInfo(link);
 
             this.resultsTextArea.appendText(tmp + "; " + info + "\n");
 
@@ -169,13 +167,10 @@ public class SpotyCheckController {
 
     }
 
-    public void setModel(ModelSing model){
+    public void setModel(Model model){
         this.model = model;
     }
 
-   public void setStage(Stage primaryStage){
-        this.primaryStage = primaryStage;
-    }
 
     public void displayErrorMessage(String textMessage){
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -205,18 +200,20 @@ public class SpotyCheckController {
         stage.setScene(scene);
         stage.show();*/
 
-        nextButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")));
+        //nextButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")));
 
-        /*FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
 
         Parent root = loader.load();
         SpotyCheckArtistsNameIdController controller = loader.getController() ;
         controller.setModel(this.model) ;
-        controller.setStage(this.primaryStage);
-        //Stage stage = (Stage) nextButtonId.getScene().getWindow();
+
+        Stage stage = (Stage) nextButtonId.getScene().getWindow();
         Scene scene = new Scene(root);
-        this.primaryStage.setScene(scene);
-        this.primaryStage.show();*/
+        stage.setScene(scene);
+        stage.show();
+
+
 
     }
 

@@ -3,7 +3,6 @@ package com.equilibriummusicgroup.SpotyCheck.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.util.Map;
 
 public class Model {
 
@@ -14,7 +13,13 @@ public class Model {
         this.apiQuery  = new ApiQueryUtil();
     }
 
-
+    /**
+     * Checks whether an Album exists
+     * @param link the constructed link to query the web API
+     * @return <p>int:</p>
+     *          <p> 0 - The album associated with this UPC does not exist</p>
+     *          <p> 1 - The album associated with this UPC exists</p>
+     */
     public int getTotal(String link){
 
         JsonObject jsonResponse = apiQuery.getJson(link);
@@ -27,9 +32,14 @@ public class Model {
         }
 
         return 0;
-
     }
 
+    /**
+     * Retrieves Album Info
+     * @param link the constructed link to query the web API
+     * @return <p>String:</p>
+     *          <p>Album name and Artists</p>
+     */
     public String getInfo(String link) {
         StringBuilder artistsString = new StringBuilder();
 
@@ -72,7 +82,11 @@ public class Model {
 
     }
 
-
+    /**
+     * Checks for Album validity for <b>getInfo()</b> method
+     * @param jsonResponse the JsonObject returned by <b>getJson()</b>
+     * @return <p>boolean</p>
+     */
     public boolean isAlbum(JsonObject jsonResponse){
 
         JsonObject jsonAlbum = jsonResponse.get("albums").getAsJsonObject();
@@ -86,6 +100,12 @@ public class Model {
         return false;
     }
 
+    /**
+     * Retrieves Artist info
+     * @param link the constructed link to query the web API
+     * @param tmp the current artist in the TextArea
+     * @return <p>String</p>
+     */
     public String getArtistInfo(String link, String tmp) {
 
         StringBuilder artistInfoString = new StringBuilder();
@@ -117,13 +137,9 @@ public class Model {
 
                 artistInfoString.append(lowerCaseArtist + "; " + popularity + "; " + followers + "; " + id + System.lineSeparator());
 
-                //bw.write(lowerCaseArtist + ", " + popularity + ", " + followers + System.lineSeparator());
-
             }
 
-
         }
-
         return artistInfoString.toString();
     }
 }

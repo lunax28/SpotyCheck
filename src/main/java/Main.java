@@ -7,7 +7,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
- * SpotyCheck queries the Spotify API for UPCs and other pieces of information.
+ * SpotyCheck queries the Spotify API to check UPCs and retrieve Artists' information
  *
  * @author  lunax28
  * @version 1.0

@@ -2,20 +2,18 @@
  * Sample Skeleton for 'spotyCheckGui.fxml' Controller Class
  */
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-
-import com.equilibriummusicgroup.SpotyCheck.model.ApiQueryUtil;
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
-import com.equilibriummusicgroup.SpotyCheck.model.ModelSing;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,6 +23,7 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class SpotyCheckController {
+
     @FXML
     private Model model;
 
@@ -48,46 +47,116 @@ public class SpotyCheckController {
 
     private Scanner scanner;
 
+    private BufferedReader br;
+    private String line;
+    private InputStream stream;
+    //private String link = "";
+    //private String tmp = "";
+
 
 
     @FXML
-    void checkButton(ActionEvent event) {
-/*        if(this.outputTextField.getText().isEmpty()){
-            displayErrorMessage("Make sure to add an output destination!");
-        }*/
+    void checkButton(ActionEvent event) throws IOException {
         this.outputTextField.clear();
         this.resultsTextArea.clear();
         if(this.upcTextArea.getText().isEmpty()){
             displayErrorMessage("Make sure to add a list of UPCs first!");
         }
-        String tmp = "";
-        String link = "";
-        scanner = new Scanner(upcTextArea.getText());
 
-        while (scanner.hasNextLine()) {
-            tmp = scanner.nextLine();
+        //scanner = new Scanner(upcTextArea.getText());
+        stream = new ByteArrayInputStream(upcTextArea.getText().getBytes(StandardCharsets.UTF_8.name()));
 
-            System.out.println("TMP: " + tmp);
+        br = new BufferedReader
+                (new InputStreamReader(stream));
 
-            link = ("https://api.spotify.com/v1/search?q=upc:" + tmp + "&type=album");
+        for (line = br.readLine(); line != null; line = br.readLine()) {
+            System.out.println("LINE IS: " + line);
 
-            System.out.println("LINK: " + link);
 
-            int total = 0;
+            Task<String> task = new Task<String>(){
 
-            //try {
-                total = model.getTotal(link);
-            //} catch (Exception e) {
-                //showAlertErrorDialog(e);
+                @Override
+                protected String call() throws Exception {
+                    line = br.readLine();
+                    //String tmp = scanner.nextLine();
+                    System.out.println("TMP: " + line);
 
-            //}
+                    String link = ("https://api.spotify.com/v1/search?q=upc:" + line + "&type=album");
+                    System.out.println("LINK: " + link);
 
-            this.resultsTextArea.appendText(tmp + ", " + total + "\n");
+                    Model modelCopy = new Model();
+
+                    int result = modelCopy.getTotal(link);
+                    return line + ", " + result;
+                }
+            };
+
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    String result = task.getValue();
+                    resultsTextArea.appendText(result + "\n");
+                }
+            });
+            //total = model.getTotal(link);
+
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
+
+
 
         }
 
-        this.outputTextField.setText("SUCCESS!");
 
+
+        /*//while (scanner.hasNextLine()) {
+        try {
+            while ((line = br.readLine()) != null){
+
+                line = br.readLine();
+
+                //tmp = scanner.nextLine();
+                //System.out.println("TMP: " + tmp);
+
+                Task<String> task = new Task<String>(){
+
+                    @Override
+                    protected String call() throws Exception {
+
+                        //String tmp = scanner.nextLine();
+                        System.out.println("TMP: " + line);
+
+                        String link = ("https://api.spotify.com/v1/search?q=upc:" + line + "&type=album");
+                        System.out.println("LINK: " + link);
+
+                        Model modelCopy = new Model();
+
+                        int result = modelCopy.getTotal(link);
+                        return line + ", " + result;
+                    }
+                };
+
+                task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        String result = task.getValue();
+                        resultsTextArea.appendText(result + "\n");
+                    }
+                });
+                //total = model.getTotal(link);
+
+                Thread th = new Thread(task);
+                th.setDaemon(true);
+                th.start();
+
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+*/
+        this.outputTextField.setText("SUCCESS!");
 
     }
 
@@ -123,8 +192,6 @@ public class SpotyCheckController {
         alert.getDialogPane().setExpandableContent(expContent);
 
         alert.showAndWait();
-
-
     }
 
     @FXML
@@ -213,8 +280,5 @@ public class SpotyCheckController {
         stage.setScene(scene);
         stage.show();
 
-
-
     }
-
 }

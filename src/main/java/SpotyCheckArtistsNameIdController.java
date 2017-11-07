@@ -82,7 +82,7 @@ public class SpotyCheckArtistsNameIdController {
 
             System.out.println("LINK: " + link);
 
-            String artistInfoString = ModelSing.getInstance().getArtistInfo(link, tmp);
+            String artistInfoString = this.model.getArtistInfo(link, tmp);
 
             if(artistInfoString.isEmpty()){
                 artistInfoString = "NOT FOUND";

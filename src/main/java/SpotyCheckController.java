@@ -96,8 +96,6 @@ public class SpotyCheckController {
                 disableButtons();
                 updateProgress(-1,-1);
 
-                checkButton.setDisable(true);
-
                 List<String>upcResult = new ArrayList<>();
 
 
@@ -195,31 +193,69 @@ public class SpotyCheckController {
     @FXML
     void getInfoButton(ActionEvent event) {
         this.resultsTextArea.clear();
-        this.outputTextField.clear();
 
         if (this.upcTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of UPCs first!");
         }
-        String tmp = "";
-        String link = "";
+
         scanner = new Scanner(upcTextArea.getText());
 
+        upcList = new ArrayList<>();
+
         while (scanner.hasNextLine()) {
-            tmp = scanner.nextLine();
 
-            System.out.println("TMP: " + tmp);
-
-            link = ("https://api.spotify.com/v1/search?q=upc:" + tmp + "&type=album");
-
-            System.out.println("LINK: " + link);
-
-            String info = model.getInfo(link);
-
-            this.resultsTextArea.appendText(tmp + "; " + info + "\n");
+            upcList.add(scanner.nextLine());
 
         }
 
-        this.outputTextField.setText("SUCCESS!");
+
+        Task< List<String>> task = new Task< List<String>>() {
+
+            @Override
+            protected List<String> call() throws Exception {
+
+                disableButtons();
+                updateProgress(-1,-1);
+
+                List<String>upcResult = new ArrayList<>();
+
+
+                for (String st: upcList) {
+                    System.out.println(st);
+
+                    Model modelCopy = new Model();
+
+                    String link = ("https://api.spotify.com/v1/search?q=upc:" + st + "&type=album");
+                    System.out.println("LINK: " + link);
+
+                    String result = model.getInfo(link);
+
+                    upcResult.add(st + ", " + result + System.lineSeparator());
+                }
+                updateProgress(1,1);
+                return upcResult;
+            }
+        };
+
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                List<String> resultList = task.getValue();
+                for (String st: resultList) {
+                    resultsTextArea.appendText(st);
+                }
+                //resultsTextArea.appendText(resultList.toString());
+                //outputTextField.setText("SUCCESS!");
+                enableButtons();
+            }
+        });
+
+        progressBar.progressProperty().bind(task.progressProperty());
+
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+
 
 
     }
@@ -249,10 +285,8 @@ public class SpotyCheckController {
 
     @FXML
     void clearButton(ActionEvent event) {
-        this.outputTextField.clear();
         this.resultsTextArea.clear();
         this.upcTextArea.clear();
-
     }
 
 

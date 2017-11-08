@@ -42,7 +42,7 @@
                   <Insets bottom="5.0" left="10.0" right="5.0" top="10.0" />
                </VBox.margin>
                <children>
-                  <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="785.0" progress="0.01" />
+                  <ProgressBar fx:id="progressBar" prefHeight="20.0" prefWidth="785.0" progress="0.0" />
                </children>
             </HBox>
             <Separator prefWidth="500.0">

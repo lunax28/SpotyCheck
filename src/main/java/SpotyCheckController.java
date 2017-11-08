@@ -5,8 +5,11 @@
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -30,6 +33,15 @@ public class SpotyCheckController {
     @FXML
     private Button nextButtonId;
 
+    @FXML
+    private Button checkButton;
+
+    @FXML
+    private Button clearButton;
+
+    @FXML
+    private Button getInfoButton;
+
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -47,116 +59,102 @@ public class SpotyCheckController {
 
     private Scanner scanner;
 
-    private BufferedReader br;
-    private String line;
-    private InputStream stream;
-    //private String link = "";
-    //private String tmp = "";
+    private List<String> upcList;
+
+    @FXML
+    private ProgressBar progressBar;
 
 
 
     @FXML
     void checkButton(ActionEvent event) throws IOException {
-        this.outputTextField.clear();
+        //this.outputTextField.clear();
         this.resultsTextArea.clear();
-        if(this.upcTextArea.getText().isEmpty()){
+        if (this.upcTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of UPCs first!");
         }
 
-        //scanner = new Scanner(upcTextArea.getText());
-        stream = new ByteArrayInputStream(upcTextArea.getText().getBytes(StandardCharsets.UTF_8.name()));
+        scanner = new Scanner(upcTextArea.getText());
 
-        br = new BufferedReader
-                (new InputStreamReader(stream));
+        upcList = new ArrayList<>();
 
-        for (line = br.readLine(); line != null; line = br.readLine()) {
-            System.out.println("LINE IS: " + line);
+        while (scanner.hasNextLine()) {
+
+            upcList.add(scanner.nextLine());
+
+        }
+        /*for (String st: upcList) {
+            System.out.println(st);
+
+        }*/
+
+        Task< List<String>> task = new Task< List<String>>() {
+
+            @Override
+            protected List<String> call() throws Exception {
+
+                disableButtons();
+                updateProgress(-1,-1);
+
+                checkButton.setDisable(true);
+
+                List<String>upcResult = new ArrayList<>();
 
 
-            Task<String> task = new Task<String>(){
 
-                @Override
-                protected String call() throws Exception {
-                    line = br.readLine();
-                    //String tmp = scanner.nextLine();
-                    System.out.println("TMP: " + line);
-
-                    String link = ("https://api.spotify.com/v1/search?q=upc:" + line + "&type=album");
-                    System.out.println("LINK: " + link);
+                for (String st: upcList) {
+                    System.out.println(st);
 
                     Model modelCopy = new Model();
 
+                    String link = ("https://api.spotify.com/v1/search?q=upc:" + st + "&type=album");
+                    System.out.println("LINK: " + link);
+
                     int result = modelCopy.getTotal(link);
-                    return line + ", " + result;
+
+                    upcResult.add(st + ", " + result + System.lineSeparator());
                 }
-            };
-
-            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {
-                    String result = task.getValue();
-                    resultsTextArea.appendText(result + "\n");
-                }
-            });
-            //total = model.getTotal(link);
-
-            Thread th = new Thread(task);
-            th.setDaemon(true);
-            th.start();
-
-
-
-        }
-
-
-
-        /*//while (scanner.hasNextLine()) {
-        try {
-            while ((line = br.readLine()) != null){
-
-                line = br.readLine();
-
-                //tmp = scanner.nextLine();
-                //System.out.println("TMP: " + tmp);
-
-                Task<String> task = new Task<String>(){
-
-                    @Override
-                    protected String call() throws Exception {
-
-                        //String tmp = scanner.nextLine();
-                        System.out.println("TMP: " + line);
-
-                        String link = ("https://api.spotify.com/v1/search?q=upc:" + line + "&type=album");
-                        System.out.println("LINK: " + link);
-
-                        Model modelCopy = new Model();
-
-                        int result = modelCopy.getTotal(link);
-                        return line + ", " + result;
-                    }
-                };
-
-                task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                    @Override
-                    public void handle(WorkerStateEvent event) {
-                        String result = task.getValue();
-                        resultsTextArea.appendText(result + "\n");
-                    }
-                });
-                //total = model.getTotal(link);
-
-                Thread th = new Thread(task);
-                th.setDaemon(true);
-                th.start();
-
-
+                updateProgress(1,1);
+                return upcResult;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-*/
-        this.outputTextField.setText("SUCCESS!");
+        };
+
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                List<String> resultList = task.getValue();
+                for (String st: resultList) {
+                    resultsTextArea.appendText(st);
+                }
+                //resultsTextArea.appendText(resultList.toString());
+                //outputTextField.setText("SUCCESS!");
+                enableButtons();
+            }
+        });
+
+        progressBar.progressProperty().bind(task.progressProperty());
+
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+
+    }
+
+    private void disableButtons() {
+        checkButton.setDisable(true);
+        clearButton.setDisable(true);
+        getInfoButton.setDisable(true);
+        nextButtonId.setDisable(true);
+
+
+    }
+
+    private void enableButtons() {
+        checkButton.setDisable(false);
+        clearButton.setDisable(false);
+        getInfoButton.setDisable(false);
+        nextButtonId.setDisable(false);
+
 
     }
 
@@ -199,7 +197,7 @@ public class SpotyCheckController {
         this.resultsTextArea.clear();
         this.outputTextField.clear();
 
-        if(this.upcTextArea.getText().isEmpty()){
+        if (this.upcTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of UPCs first!");
         }
         String tmp = "";
@@ -226,7 +224,8 @@ public class SpotyCheckController {
 
     }
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    @FXML
+        // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert outputTextField != null : "fx:id=\"outputTextField\" was not injected: check your FXML file 'spotyCheckGui.fxml'.";
         assert upcTextArea != null : "fx:id=\"upcTextArea\" was not injected: check your FXML file 'spotyCheckGui.fxml'.";
@@ -234,12 +233,12 @@ public class SpotyCheckController {
 
     }
 
-    public void setModel(Model model){
+    public void setModel(Model model) {
         this.model = model;
     }
 
 
-    public void displayErrorMessage(String textMessage){
+    public void displayErrorMessage(String textMessage) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning!");
         alert.setContentText(textMessage);
@@ -269,11 +268,11 @@ public class SpotyCheckController {
 
         //nextButtonId.getScene().setRoot(FXMLLoader.load(getClass().getResource("spotyCheckArtistsNameId.fxml")));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml")) ;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml"));
 
         Parent root = loader.load();
-        SpotyCheckArtistsNameIdController controller = loader.getController() ;
-        controller.setModel(this.model) ;
+        SpotyCheckArtistsNameIdController controller = loader.getController();
+        controller.setModel(this.model);
 
         Stage stage = (Stage) nextButtonId.getScene().getWindow();
         Scene scene = new Scene(root);

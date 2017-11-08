@@ -38,7 +38,7 @@ public class ApiQueryUtil {
         try {
             URL url = new URL("https://accounts.spotify.com/api/token");
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-            String basicAuth = "Basic NTM0NzYyN2JkYzQ0NGEwYzg3ZWI4NGFkZTkwMTc0YzI6ZTZiMmVhNzIzYTY5NDc4MjhiNTQyMDQzM2E1MTdjYzg=";
+            String basicAuth = "Basic secretKey";
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("POST");
             httpCon.setRequestProperty("Authorization", basicAuth);

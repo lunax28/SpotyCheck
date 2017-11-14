@@ -314,4 +314,107 @@ public class SpotyCheckController {
         stage.show();
 
     }
+
+    @FXML
+    void getInfoTracks(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+
+        if (this.upcTextArea.getText().isEmpty()) {
+            displayErrorMessage("Make sure to add a list of UPCs first!");
+            return;
+        }
+
+        scanner = new Scanner(upcTextArea.getText());
+
+        upcList = new ArrayList<>();
+
+        while (scanner.hasNextLine()) {
+
+            upcList.add(scanner.nextLine());
+
+        }
+
+        Task< List<String>> task = new Task< List<String>>() {
+
+            @Override
+            protected List<String> call() throws Exception {
+
+                disableButtons();
+                updateProgress(-1,-1);
+
+                List<String>albumId = new ArrayList<>();
+
+
+                for (String upc: upcList) {
+                    System.out.println(upc);
+
+                    Model modelCopy = new Model();
+
+                    String link = ("https://api.spotify.com/v1/search?q=upc:" + upc + "&type=album");
+                    System.out.println("LINK: " + link);
+
+                    String resultId = model.getInfoTracks(link);
+
+                    if(resultId != null){
+                        albumId.add(resultId);
+                    }
+
+
+                }
+
+                //add here multiple lookup?
+                StringBuilder linkId = new StringBuilder();
+                linkId.append("https://api.spotify.com/v1/albums/?ids=");
+
+                for (String id: albumId) {
+                    System.out.println(id);
+
+                    Model modelCopy = new Model();
+
+                    linkId.append(id + ",");
+
+                }
+
+                String finalLink = linkId.toString().substring(0,linkId.toString().length()-1);
+
+                System.out.println("FINAL LINK: " + finalLink);
+
+
+                Model modelCopy = new Model();
+                List<String> trackList = new ArrayList<>();
+                trackList = model.getTrackList(finalLink);
+
+                //array that collects every track in those albums
+
+                updateProgress(1,1);
+                return trackList;
+            }
+        };
+
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                List<String> resultList = task.getValue();
+                for (String st: resultList) {
+                    resultsTextArea.appendText(st);
+                }
+                //resultsTextArea.appendText(resultList.toString());
+                //outputTextField.setText("SUCCESS!");
+                enableButtons();
+            }
+        });
+
+        progressBar.progressProperty().bind(task.progressProperty());
+
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+
+
+
+
+
+
+    }
 }

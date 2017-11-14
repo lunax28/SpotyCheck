@@ -3,6 +3,9 @@ package com.equilibriummusicgroup.SpotyCheck.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Model {
 
@@ -141,5 +144,69 @@ public class Model {
 
         }
         return artistInfoString.toString();
+    }
+
+
+
+    public String getInfoTracks(String link) {
+        StringBuilder artistsString = new StringBuilder();
+
+        List<String> idArray = new ArrayList<>();
+
+        JsonObject jsonResponse = apiQuery.getJson(link);
+        System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+
+        boolean checkAlbum = this.isAlbum(jsonResponse);
+
+        if(!checkAlbum){
+            System.out.println("NOT AN ALBUM!");
+            return null;
+        }
+
+        JsonObject jsonAlbum = jsonResponse.get("albums").getAsJsonObject();
+
+        JsonArray itemsArray = jsonAlbum.get("items").getAsJsonArray();
+
+        JsonObject firstItemsObj = itemsArray.get(0).getAsJsonObject();
+
+        String id = firstItemsObj.get("id").getAsString();
+
+        return id;
+
+
+
+    }
+
+    public List<String> getTrackList(String finalLink) {
+
+        List<String> tracksList = new ArrayList<>();
+
+        JsonObject jsonResponse = apiQuery.getJson(finalLink);
+        System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+
+
+        JsonArray albumArray = jsonResponse.get("albums").getAsJsonArray();
+
+        for (int i = 0; i < albumArray.size(); i++) {
+
+            JsonObject nextAlbum = albumArray.get(i).getAsJsonObject();
+
+            JsonObject tracksObject = nextAlbum.get("tracks").getAsJsonObject();
+
+            JsonArray itemsTracks = tracksObject.get("items").getAsJsonArray();
+
+            for (int z = 0; z < itemsTracks.size(); z++) {
+
+                JsonObject nextTrack = itemsTracks.get(z).getAsJsonObject();
+
+                String name = nextTrack.get("name").getAsString();
+
+                tracksList.add(name + System.lineSeparator());
+
+            }
+
+        }
+
+        return tracksList;
     }
 }

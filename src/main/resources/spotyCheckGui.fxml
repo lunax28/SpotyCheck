@@ -80,7 +80,7 @@
                   <Insets left="85.0" top="150.0" />
                </VBox.margin>
             </Button>
-            <Button fx:id="getInfoButton" defaultButton="true" mnemonicParsing="false" onAction="#getInfoButton" prefHeight="27.0" prefWidth="80.0" text="GET INFO">
+            <Button fx:id="getInfoButton" defaultButton="true" mnemonicParsing="false" onAction="#getInfoTracks" prefHeight="27.0" prefWidth="80.0" text="GET INFO">
                <VBox.margin>
                   <Insets left="80.0" top="20.0" />
                </VBox.margin>

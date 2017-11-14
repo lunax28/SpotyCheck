@@ -64,6 +64,10 @@ public class SpotyCheckController {
     @FXML
     private ProgressBar progressBar;
 
+    private String tmpUPC;
+
+    private boolean stopProgram = false;
+
 
 
     @FXML
@@ -202,6 +206,7 @@ public class SpotyCheckController {
 
         upcList = new ArrayList<>();
 
+
         while (scanner.hasNextLine()) {
 
             upcList.add(scanner.nextLine());
@@ -316,7 +321,9 @@ public class SpotyCheckController {
     }
 
     @FXML
-    void getInfoTracks(ActionEvent event) {
+    void getInfoTracks() {
+
+        System.out.println("getInfoTracks() called");
 
         this.resultsTextArea.clear();
 
@@ -329,9 +336,23 @@ public class SpotyCheckController {
 
         upcList = new ArrayList<>();
 
-        while (scanner.hasNextLine()) {
+        int count = 0;
 
-            upcList.add(scanner.nextLine());
+        while (true) {
+
+            if(!scanner.hasNextLine()){
+                stopProgram = true;
+            }
+
+            if(count >= 20){
+                tmpUPC = scanner.nextLine();;
+                break;
+            }
+
+            String upc = scanner.nextLine();
+            upcList.add(upc);
+            this.upcTextArea.setText(this.upcTextArea.getText().replace(upc,""));
+            count++;
 
         }
 
@@ -399,9 +420,15 @@ public class SpotyCheckController {
                 for (String st: resultList) {
                     resultsTextArea.appendText(st);
                 }
-                //resultsTextArea.appendText(resultList.toString());
+                System.out.println("*#*#TEST*#*#");
+                resultsTextArea.appendText(resultList.toString());
                 //outputTextField.setText("SUCCESS!");
                 enableButtons();
+
+                if(!stopProgram){
+                    getInfoTracks();
+                }
+
             }
         });
 

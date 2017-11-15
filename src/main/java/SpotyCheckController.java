@@ -68,6 +68,8 @@ public class SpotyCheckController {
 
     private boolean stopProgram = false;
 
+    private StringBuilder tracksResult = new StringBuilder();
+
 
 
     @FXML
@@ -327,6 +329,10 @@ public class SpotyCheckController {
 
         this.resultsTextArea.clear();
 
+        this.tracksResult = new StringBuilder();
+
+
+        //check also whether there are UPCs!!! whitespaces may still be present
         if (this.upcTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of UPCs first!");
             return;
@@ -422,21 +428,29 @@ public class SpotyCheckController {
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
+                //StringBuilder tracksResult = new StringBuilder();
                 List<String> resultList = task.getValue();
                 for (String st: resultList) {
-                    resultsTextArea.appendText(st);
+                    //resultsTextArea.appendText(st);
+                    tracksResult.append(st);
+                    System.out.println("LINE 431 st: " + st);
                 }
                 System.out.println("*#*#TEST*#*#");
-                resultsTextArea.appendText(resultList.toString());
+                //resultsTextArea.appendText(resultList.toString());
                 //outputTextField.setText("SUCCESS!");
                 enableButtons();
 
-                if(!stopProgram){
+                /*if(!stopProgram){
                     getInfoTracks();
                     //create new scanner?? so it goes back at the beginning of TextArea
-                    //scanner = new Scanner(upcTextArea.getText());;
+                    //no you already do that at the beginning of getInfoTracks() method
 
-                }
+                }*/
+
+                //it overwrites what you've appended earlier, with the first 20 UPCs!!
+
+                System.out.println("END OF TASK LINE 448");
+                resultsTextArea.appendText(tracksResult.toString());
 
             }
         });
@@ -446,11 +460,5 @@ public class SpotyCheckController {
         Thread th = new Thread(task);
         th.setDaemon(true);
         th.start();
-
-
-
-
-
-
     }
 }

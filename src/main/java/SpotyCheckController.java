@@ -342,6 +342,7 @@ public class SpotyCheckController {
 
             if(!scanner.hasNextLine()){
                 stopProgram = true;
+                break;
             }
 
             if(count >= 20){
@@ -349,7 +350,12 @@ public class SpotyCheckController {
                 break;
             }
 
+
             String upc = scanner.nextLine();
+            System.out.println("UPC line 354: " + upc);
+            if(upc.isEmpty()){
+                continue;
+            }
             upcList.add(upc);
             this.upcTextArea.setText(this.upcTextArea.getText().replace(upc,""));
             count++;
@@ -427,6 +433,9 @@ public class SpotyCheckController {
 
                 if(!stopProgram){
                     getInfoTracks();
+                    //create new scanner?? so it goes back at the beginning of TextArea
+                    //scanner = new Scanner(upcTextArea.getText());;
+
                 }
 
             }

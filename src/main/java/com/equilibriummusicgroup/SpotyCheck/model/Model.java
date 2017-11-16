@@ -178,6 +178,7 @@ public class Model {
     }
 
     public List<String> getTrackList(String finalLink) {
+        System.out.println("finalLink: " + finalLink);
 
         List<String> tracksList = new ArrayList<>();
 

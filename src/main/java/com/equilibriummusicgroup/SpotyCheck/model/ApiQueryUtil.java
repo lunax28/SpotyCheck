@@ -68,10 +68,10 @@ public class ApiQueryUtil {
 
         long expiry = System.currentTimeMillis() + (token.get("expires_in").getAsLong() * 1000);
 
-        preferences.get("token","");
+        preferences.get("token", "");
         preferences.put("token", token.get("access_token").getAsString());
 
-        preferences.getLong("expiry",0);
+        preferences.getLong("expiry", 0);
         preferences.putLong("expiry", expiry);
 
         System.out.println("TOKEN: " + token.get("access_token").getAsString());
@@ -90,21 +90,15 @@ public class ApiQueryUtil {
             URL url = new URL(link);
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 
-            /*if (this.tokenString.isEmpty()) {
-                this.tokenString = this.getToken();
-                System.out.println("###\nREQUESTED NEW TOKEN!!!\n###");
-            }*/
-
             String basicAuth = "";
 
-            if(preferences.get("token","").isEmpty() || preferences.getLong("expiry",0) < System.currentTimeMillis()){
+            if (preferences.get("token", "").isEmpty() || preferences.getLong("expiry", 0) < System.currentTimeMillis()) {
 
                 System.out.println("###\nREQUESTED NEW TOKEN!!!\n###");
                 basicAuth = "Bearer " + getToken();
             } else {
-                basicAuth = "Bearer " + preferences.get("token","");
+                basicAuth = "Bearer " + preferences.get("token", "");
             }
-
 
             httpCon.setRequestMethod("GET");
             httpCon.setRequestProperty("Authorization", basicAuth);
@@ -113,11 +107,10 @@ public class ApiQueryUtil {
             if (this.responseCode != 200) {
                 System.out.println("RESPONSE CODE: " + this.responseCode);
                 return null;
-
             }
+
             System.out.println("\nSending 'GET' request to URL : " + url);
             System.out.println("Response Code : " + responseCode);
-
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(httpCon.getInputStream()));
@@ -145,8 +138,6 @@ public class ApiQueryUtil {
     }
 
 
-
-
     public String isAlbum(String link) {
         this.link = link;
 
@@ -164,7 +155,7 @@ public class ApiQueryUtil {
         String total = jsonId.get("total").toString();
         System.out.println("TOTAL: " + total);
         this.responseTrimmed = "";
-        if(total.equals("1")){
+        if (total.equals("1")) {
             return "1";
 
         } else {
@@ -175,7 +166,6 @@ public class ApiQueryUtil {
     public int getResponseCode() {
         return responseCode;
     }
-
 
 
 }

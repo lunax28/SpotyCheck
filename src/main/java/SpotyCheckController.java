@@ -71,7 +71,6 @@ public class SpotyCheckController {
     private StringBuilder tracksResult = new StringBuilder();
 
 
-
     @FXML
     void checkButton(ActionEvent event) throws IOException {
         //this.outputTextField.clear();
@@ -94,19 +93,18 @@ public class SpotyCheckController {
 
         }*/
 
-        Task< List<String>> task = new Task< List<String>>() {
+        Task<List<String>> task = new Task<List<String>>() {
 
             @Override
             protected List<String> call() throws Exception {
 
                 disableButtons();
-                updateProgress(-1,-1);
+                updateProgress(-1, -1);
 
-                List<String>upcResult = new ArrayList<>();
+                List<String> upcResult = new ArrayList<>();
 
 
-
-                for (String st: upcList) {
+                for (String st : upcList) {
                     System.out.println(st);
 
                     Model modelCopy = new Model();
@@ -118,7 +116,7 @@ public class SpotyCheckController {
 
                     upcResult.add(st + ", " + result + System.lineSeparator());
                 }
-                updateProgress(1,1);
+                updateProgress(1, 1);
                 return upcResult;
             }
         };
@@ -127,7 +125,7 @@ public class SpotyCheckController {
             @Override
             public void handle(WorkerStateEvent event) {
                 List<String> resultList = task.getValue();
-                for (String st: resultList) {
+                for (String st : resultList) {
                     resultsTextArea.appendText(st);
                 }
                 //resultsTextArea.appendText(resultList.toString());
@@ -216,18 +214,18 @@ public class SpotyCheckController {
         }
 
 
-        Task< List<String>> task = new Task< List<String>>() {
+        Task<List<String>> task = new Task<List<String>>() {
 
             @Override
             protected List<String> call() throws Exception {
 
                 disableButtons();
-                updateProgress(-1,-1);
+                updateProgress(-1, -1);
 
-                List<String>upcResult = new ArrayList<>();
+                List<String> upcResult = new ArrayList<>();
 
 
-                for (String st: upcList) {
+                for (String st : upcList) {
                     System.out.println(st);
 
                     Model modelCopy = new Model();
@@ -239,7 +237,7 @@ public class SpotyCheckController {
 
                     upcResult.add(st + ", " + result + System.lineSeparator());
                 }
-                updateProgress(1,1);
+                updateProgress(1, 1);
                 return upcResult;
             }
         };
@@ -248,7 +246,7 @@ public class SpotyCheckController {
             @Override
             public void handle(WorkerStateEvent event) {
                 List<String> resultList = task.getValue();
-                for (String st: resultList) {
+                for (String st : resultList) {
                     resultsTextArea.appendText(st);
                 }
                 //resultsTextArea.appendText(resultList.toString());
@@ -262,7 +260,6 @@ public class SpotyCheckController {
         Thread th = new Thread(task);
         th.setDaemon(true);
         th.start();
-
 
 
     }
@@ -342,7 +339,13 @@ public class SpotyCheckController {
 
         upcList = new ArrayList<>();
 
-        int count = 0;
+        while (scanner.hasNextLine()) {
+
+            upcList.add(scanner.nextLine());
+
+        }
+
+        /*int count = 0;
 
         while (true) {
 
@@ -366,62 +369,82 @@ public class SpotyCheckController {
             this.upcTextArea.setText(this.upcTextArea.getText().replace(upc,""));
             count++;
 
-        }
+        }*/
 
-        Task< List<String>> task = new Task< List<String>>() {
+        Task<List<String>> task = new Task<List<String>>() {
 
             @Override
             protected List<String> call() throws Exception {
 
                 disableButtons();
-                updateProgress(-1,-1);
+                updateProgress(-1, -1);
 
-                List<String>albumId = new ArrayList<>();
+                List<String> albumId = new ArrayList<>();
 
-
-                for (String upc: upcList) {
+                //for loop to extract album IDs for each UPC
+                for (String upc : upcList) {
                     System.out.println(upc);
-
-                    Model modelCopy = new Model();
 
                     String link = ("https://api.spotify.com/v1/search?q=upc:" + upc + "&type=album");
                     System.out.println("LINK: " + link);
 
                     String resultId = model.getInfoTracks(link);
 
-                    if(resultId != null){
+                    if (resultId != null) {
                         albumId.add(resultId);
                     }
 
 
                 }
 
-                //add here multiple lookup?
+                List<StringBuilder> IDsLinkList = new ArrayList<>();
                 StringBuilder linkId = new StringBuilder();
                 linkId.append("https://api.spotify.com/v1/albums/?ids=");
 
-                for (String id: albumId) {
-                    System.out.println(id);
+                for (int i = 0; i < albumId.size(); i++) {
+                    System.out.println("albumId: " + albumId.get(i));
 
-                    Model modelCopy = new Model();
 
-                    linkId.append(id + ",");
+                    if (i < 20 && i == albumId.size() - 1) {
+                        linkId.append(albumId.get(i));
+                        System.out.println("LINE 410 linkId = " + linkId.toString());
+                        IDsLinkList.add(linkId);
+                        //linkId = new StringBuilder(); //or should I clear() it?
+                        continue;
+                    } else if ( i > 0 && i % 20 == 19){
+                        linkId.append(albumId.get(i));
+                        System.out.println("LINE 416 linkId = " + linkId.toString());
+                        IDsLinkList.add(linkId);
+                        linkId = new StringBuilder("https://api.spotify.com/v1/albums/?ids="); //or should I clear() it?
+                        continue;
+                    }else if (i == albumId.size() - 1){
+                        linkId.append(albumId.get(i));
+                        System.out.println("LINE 416 linkId = " + linkId.toString());
+                        IDsLinkList.add(linkId);
+                        continue;
+                    }
+
+                    linkId.append(albumId.get(i) + ",");
 
                 }
 
-                String finalLink = linkId.toString().substring(0,linkId.toString().length()-1);
+                List<String> trackNamesList = new ArrayList<>();
 
-                System.out.println("FINAL LINK: " + finalLink);
+                for (StringBuilder sb : IDsLinkList) {
 
+                    List<String> trackList = new ArrayList<>();
+                    trackList = model.getTrackList(sb.toString());
 
-                Model modelCopy = new Model();
-                List<String> trackList = new ArrayList<>();
-                trackList = model.getTrackList(finalLink);
+                    for (String track : trackList) {
 
+                        trackNamesList.add(track);
+
+                    }
+                }
                 //array that collects every track in those albums
 
-                updateProgress(1,1);
-                return trackList;
+                updateProgress(1, 1);
+                return trackNamesList;
             }
         };
 
@@ -430,27 +453,17 @@ public class SpotyCheckController {
             public void handle(WorkerStateEvent event) {
                 //StringBuilder tracksResult = new StringBuilder();
                 List<String> resultList = task.getValue();
-                for (String st: resultList) {
+                for (String st : resultList) {
                     //resultsTextArea.appendText(st);
-                    tracksResult.append(st);
-                    System.out.println("LINE 431 st: " + st);
+                    resultsTextArea.appendText(st);
+                    System.out.println("LINE 455 st: " + st);
                 }
                 System.out.println("*#*#TEST*#*#");
                 //resultsTextArea.appendText(resultList.toString());
                 //outputTextField.setText("SUCCESS!");
                 enableButtons();
 
-                /*if(!stopProgram){
-                    getInfoTracks();
-                    //create new scanner?? so it goes back at the beginning of TextArea
-                    //no you already do that at the beginning of getInfoTracks() method
-
-                }*/
-
-                //it overwrites what you've appended earlier, with the first 20 UPCs!!
-
-                System.out.println("END OF TASK LINE 448");
-                resultsTextArea.appendText(tracksResult.toString());
+                System.out.println("END OF TASK LINE 463");
 
             }
         });

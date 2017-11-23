@@ -32,6 +32,7 @@ public class Main extends Application {
             controller.setModel(model) ;
 
             Scene scene = new Scene(root);
+            primaryStage.setTitle("SpotyCheck");
             primaryStage.setScene(scene);
             primaryStage.show();
 

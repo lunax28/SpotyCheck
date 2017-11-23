@@ -11,6 +11,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 public class ApiQueryUtil {
@@ -102,6 +105,18 @@ public class ApiQueryUtil {
 
             httpCon.setRequestMethod("GET");
             httpCon.setRequestProperty("Authorization", basicAuth);
+
+            Map<String, List<String>> headers = httpCon.getHeaderFields();
+            Set<Map.Entry<String, List<String>>> entrySet = headers.entrySet();
+            for (Map.Entry<String, List<String>> entry : entrySet) {
+                String headerName = entry.getKey();
+                System.out.println("Header Name:" + headerName);
+                List<String> headerValues = entry.getValue();
+                for (String value : headerValues) {
+                    System.out.print("Header value:" + value);
+                }
+                System.out.println();
+            }
 
             this.responseCode = httpCon.getResponseCode();
             if (this.responseCode != 200) {

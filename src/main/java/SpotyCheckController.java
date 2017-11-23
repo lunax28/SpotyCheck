@@ -5,10 +5,7 @@
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
 
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
 import javafx.concurrent.Task;
@@ -85,13 +82,25 @@ public class SpotyCheckController {
 
         while (scanner.hasNextLine()) {
 
-            upcList.add(scanner.nextLine());
+            String upc = scanner.nextLine();
+            if(upc.matches("[0-9]{13}")){
+                upcList.add(upc);
+            } else{
+                displayErrorMessage("UPC format error!");
+                return;
+            }
+
+
+
 
         }
         /*for (String st: upcList) {
             System.out.println(st);
 
         }*/
+
+
+        //upcList.removeAll(Arrays.asList(null,""));
 
         Task<List<String>> task = new Task<List<String>>() {
 

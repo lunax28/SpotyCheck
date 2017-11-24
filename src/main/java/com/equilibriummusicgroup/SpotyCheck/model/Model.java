@@ -10,6 +10,7 @@ import java.util.List;
 public class Model {
 
     private ApiQueryUtil apiQuery;
+    private int failCount = 0;
 
 
     public Model(){
@@ -23,9 +24,22 @@ public class Model {
      *          <p> 0 - The album associated with this UPC does not exist</p>
      *          <p> 1 - The album associated with this UPC exists</p>
      */
-    public int getTotal(String link){
+    public int getTotal(String link) throws InterruptedException, CustomException, CustomException.ResponseCodeException {
+        if(failCount>5){
+            throw new CustomException("Too many attempts");
+        }
 
-        JsonObject jsonResponse = apiQuery.getJson(link);
+        JsonObject jsonResponse = null;
+
+        try {
+            jsonResponse = apiQuery.getJson(link);
+        } catch (CustomException e) {
+            int secondsToWait = Integer.parseInt(e.getMessage());
+            Thread.sleep(secondsToWait * 3000);
+            failCount++;
+            System.out.println("FAILCOUNT: " + failCount);
+            getTotal(link);
+        }
         System.out.println("JSON RESPONSE: " + jsonResponse.toString());
 
         boolean checkAlbum = this.isAlbum(jsonResponse);
@@ -43,7 +57,7 @@ public class Model {
      * @return <p>String:</p>
      *          <p>Album name and Artists</p>
      */
-    public String getInfo(String link) {
+    public String getInfo(String link) throws CustomException, CustomException.ResponseCodeException {
         StringBuilder artistsString = new StringBuilder();
 
         JsonObject jsonResponse = apiQuery.getJson(link);
@@ -109,7 +123,7 @@ public class Model {
      * @param tmp the current artist in the TextArea
      * @return <p>String</p>
      */
-    public String getArtistInfo(String link, String tmp) {
+    public String getArtistInfo(String link, String tmp) throws CustomException, CustomException.ResponseCodeException {
 
         StringBuilder artistInfoString = new StringBuilder();
 
@@ -148,7 +162,7 @@ public class Model {
 
 
 
-    public String getInfoTracks(String link) {
+    public String getInfoTracks(String link) throws CustomException, CustomException.ResponseCodeException {
         StringBuilder artistsString = new StringBuilder();
 
         List<String> idArray = new ArrayList<>();
@@ -177,7 +191,7 @@ public class Model {
 
     }
 
-    public List<String> getTrackList(String finalLink) {
+    public List<String> getTrackList(String finalLink) throws CustomException, CustomException.ResponseCodeException {
         System.out.println("finalLink: " + finalLink);
 
         List<String> tracksList = new ArrayList<>();

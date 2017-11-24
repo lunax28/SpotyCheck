@@ -18,24 +18,96 @@ import java.util.prefs.Preferences;
 
 public class ApiQueryUtil {
 
-    private String link;
     private JsonObject jsonObject;
     private String responseTrimmed;
     private String albumsJson;
-    private String tokenString;
     private int responseCode;
+
     //a Preferences object to store the token, avoiding repetitive calls
-    private Preferences preferences = Preferences.userNodeForPackage(ApiQueryUtil.class);
+    private static final Preferences preferences = Preferences.userNodeForPackage(ApiQueryUtil.class);
 
     public ApiQueryUtil() {
-        this.link = "";
         this.responseTrimmed = "";
         this.jsonObject = null;
-        this.tokenString = "";
         this.responseCode = 0;
     }
 
-    public String getToken() {
+    public JsonObject getJson(String link) throws CustomException, CustomException.ResponseCodeException {
+        String response = "";
+        try {
+
+            URL url = new URL(link);
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+
+            String basicAuth = "";
+
+            if (preferences.get("token", "").isEmpty() || preferences.getLong("expiry", 0) < System.currentTimeMillis()) {
+
+                System.out.println("###\nREQUESTED NEW TOKEN!!!\n###");
+                basicAuth = "Bearer " + getToken();
+            } else {
+                basicAuth = "Bearer " + preferences.get("token", "");
+            }
+
+            httpCon.setRequestMethod("GET");
+            httpCon.setRequestProperty("Authorization", basicAuth);
+
+            Map<String, List<String>> headers = httpCon.getHeaderFields();
+
+            for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+                String key = entry.getKey();
+                if (key != null) {
+                    if (key.equals("Retry-After")) {
+                        List<String> value = entry.getValue();
+                        String seconds = value.get(0);
+
+                        System.out.println("RETRY AFTER: " + seconds + " seconds!");
+                        throw new CustomException(seconds);
+                    } else {
+                        System.out.println("NO RETRY AFTER!");
+                    }
+                }
+                System.out.println("Header Name: " + key);
+                List<String> value = entry.getValue();
+                System.out.println("Header Value: " + value.get(0));
+
+            }
+
+            this.responseCode = 201;
+            if (this.responseCode != 200) {
+                System.out.println("RESPONSE CODE: " + this.responseCode);
+                throw new CustomException.ResponseCodeException("Responde Code is: " + this.responseCode);
+            }
+
+            System.out.println("\nSending 'GET' request to URL : " + url);
+            System.out.println("Response Code : " + responseCode);
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(httpCon.getInputStream()));
+            String inputLine;
+
+            while ((inputLine = in.readLine()) != null) {
+                response += inputLine;
+            }
+            in.close();
+        } catch (MalformedURLException ex) {
+            System.out.println("MalformedURLException!!");
+        } catch (ProtocolException ex) {
+            System.out.println("ProtocolException!!");
+        } catch (IOException ex) {
+            System.out.println("IOException!!");
+        }
+
+        this.responseTrimmed = response.trim();
+
+        this.jsonObject = new JsonParser().parse(responseTrimmed).getAsJsonObject();
+        System.out.println("jsonobj: " + this.jsonObject.toString());
+
+        return this.jsonObject;
+
+    }
+
+    private static String getToken() {
         String json_response = "";
 
         try {
@@ -81,106 +153,5 @@ public class ApiQueryUtil {
         return token.get("access_token").getAsString();
 
     }
-
-    public String getLink() {
-        return this.link;
-    }
-
-    public JsonObject getJson(String link) {
-        String response = "";
-        try {
-
-            URL url = new URL(link);
-            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-
-            String basicAuth = "";
-
-            if (preferences.get("token", "").isEmpty() || preferences.getLong("expiry", 0) < System.currentTimeMillis()) {
-
-                System.out.println("###\nREQUESTED NEW TOKEN!!!\n###");
-                basicAuth = "Bearer " + getToken();
-            } else {
-                basicAuth = "Bearer " + preferences.get("token", "");
-            }
-
-            httpCon.setRequestMethod("GET");
-            httpCon.setRequestProperty("Authorization", basicAuth);
-
-            Map<String, List<String>> headers = httpCon.getHeaderFields();
-            Set<Map.Entry<String, List<String>>> entrySet = headers.entrySet();
-            for (Map.Entry<String, List<String>> entry : entrySet) {
-                String headerName = entry.getKey();
-                System.out.println("Header Name:" + headerName);
-                List<String> headerValues = entry.getValue();
-                for (String value : headerValues) {
-                    System.out.print("Header value:" + value);
-                }
-                System.out.println();
-            }
-
-            this.responseCode = httpCon.getResponseCode();
-            if (this.responseCode != 200) {
-                System.out.println("RESPONSE CODE: " + this.responseCode);
-                return null;
-            }
-
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
-
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(httpCon.getInputStream()));
-            String inputLine;
-
-            while ((inputLine = in.readLine()) != null) {
-                response += inputLine;
-            }
-            in.close();
-        } catch (MalformedURLException ex) {
-            System.out.println("MalformedURLException!!");
-        } catch (ProtocolException ex) {
-            System.out.println("ProtocolException!!");
-        } catch (IOException ex) {
-            System.out.println("IOException!!");
-        }
-
-        this.responseTrimmed = response.trim();
-
-        this.jsonObject = new JsonParser().parse(responseTrimmed).getAsJsonObject();
-        System.out.println("jsonobj: " + this.jsonObject.toString());
-
-        return this.jsonObject;
-
-    }
-
-
-    public String isAlbum(String link) {
-        this.link = link;
-
-        JsonObject jsonIsAlbum = getJson(link);
-
-        if (jsonIsAlbum == null) {
-            return "RATE LIMIT";
-
-        }
-
-        JsonObject jsonId = new JsonParser().parse(this.responseTrimmed).getAsJsonObject();
-        this.albumsJson = jsonId.get("albums").toString();
-        jsonId = new JsonParser().parse(this.albumsJson).getAsJsonObject();
-
-        String total = jsonId.get("total").toString();
-        System.out.println("TOTAL: " + total);
-        this.responseTrimmed = "";
-        if (total.equals("1")) {
-            return "1";
-
-        } else {
-            return "0";
-        }
-    }
-
-    public int getResponseCode() {
-        return responseCode;
-    }
-
 
 }

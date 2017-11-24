@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import com.equilibriummusicgroup.SpotyCheck.model.CustomException;
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -120,8 +121,17 @@ public class SpotyCheckController {
 
                     String link = ("https://api.spotify.com/v1/search?q=upc:" + st + "&type=album");
                     System.out.println("LINK: " + link);
+                    int result = 0;
 
-                    int result = modelCopy.getTotal(link);
+
+                    result = modelCopy.getTotal(link);
+
+
+
+                    /*if(result == -1){
+                        displayExceptionDialog("Response Code is not 200!");
+                    }*/
+
 
                     upcResult.add(st + ", " + result + System.lineSeparator());
                 }
@@ -482,5 +492,39 @@ public class SpotyCheckController {
         Thread th = new Thread(task);
         th.setDaemon(true);
         th.start();
+    }
+
+    private void displayExceptionDialog(Throwable ex, String exceptionMessage) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Exception Dialog");
+        alert.setHeaderText("Exception");
+        alert.setContentText(exceptionMessage);
+
+        // Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+        alert.showAndWait();
     }
 }

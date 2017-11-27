@@ -123,8 +123,10 @@ public class SpotyCheckController {
                     System.out.println("LINK: " + link);
                     int result = 0;
 
+//                    upcResult.add(81 + ", " + result + System.lineSeparator());
 
-                    result = modelCopy.getTotal(link);
+                        result = modelCopy.getTotal(link);
+
 
 
 
@@ -150,6 +152,27 @@ public class SpotyCheckController {
                 //resultsTextArea.appendText(resultList.toString());
                 //outputTextField.setText("SUCCESS!");
                 enableButtons();
+            }
+        });
+
+        task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                Throwable ex = task.getException();
+                String message = ex.getMessage();
+                System.out.println("LINE 170 MESSAGE: " + message);
+                displayExceptionDialog(ex,"Response code error!");
+                enableButtons();
+            }
+        });
+
+        task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+
+                enableButtons();
+                System.out.println("setonCancelled");
+
             }
         });
 
@@ -527,4 +550,5 @@ public class SpotyCheckController {
         alert.getDialogPane().setExpandableContent(expContent);
         alert.showAndWait();
     }
+
 }

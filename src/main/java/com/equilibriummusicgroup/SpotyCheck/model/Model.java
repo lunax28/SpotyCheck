@@ -33,12 +33,15 @@ public class Model {
 
         try {
             jsonResponse = apiQuery.getJson(link);
-        } catch (CustomException e) {
+        } catch (CustomException.ResponseCodeException e) {
             int secondsToWait = Integer.parseInt(e.getMessage());
             Thread.sleep(secondsToWait * 3000);
             failCount++;
             System.out.println("FAILCOUNT: " + failCount);
             getTotal(link);
+        } catch(CustomException e){
+            System.out.println("LINE 43 CUSTOMEXCEPTION CAUGHT");
+            throw new CustomException(e.getMessage());
         }
         System.out.println("JSON RESPONSE: " + jsonResponse.toString());
 

@@ -18,6 +18,8 @@ import java.util.prefs.Preferences;
 
 public class ApiQueryUtil {
 
+    private String retryAfterSeconds;
+
     private JsonObject jsonObject;
     private String responseTrimmed;
     private String albumsJson;
@@ -59,10 +61,10 @@ public class ApiQueryUtil {
                 if (key != null) {
                     if (key.equals("Retry-After")) {
                         List<String> value = entry.getValue();
-                        String seconds = value.get(0);
+                        this.retryAfterSeconds = value.get(0);
 
-                        System.out.println("RETRY AFTER: " + seconds + " seconds!");
-                        throw new CustomException(seconds);
+                        System.out.println("RETRY AFTER: " + this.retryAfterSeconds + " seconds!");
+//                        throw new CustomException(seconds);
                     } else {
                         System.out.println("NO RETRY AFTER!");
                     }
@@ -72,11 +74,16 @@ public class ApiQueryUtil {
                 System.out.println("Header Value: " + value.get(0));
 
             }
+            this.responseCode = httpCon.getResponseCode();
 
-            this.responseCode = 201;
-            if (this.responseCode != 200) {
-                System.out.println("RESPONSE CODE: " + this.responseCode);
-                throw new CustomException.ResponseCodeException("Responde Code is: " + this.responseCode);
+//            this.responseCode = 201;
+            if (this.responseCode == 429) {
+                System.out.println("LINE 80 RESPONSE CODE: " + this.responseCode);
+                throw new CustomException.ResponseCodeException(this.retryAfterSeconds);
+            } else if (this.responseCode != 200){
+                System.out.println("LINE 83 RESPONSE CODE: " + this.responseCode);
+                throw new CustomException("Response code is: " + this.responseCode);
+
             }
 
             System.out.println("\nSending 'GET' request to URL : " + url);

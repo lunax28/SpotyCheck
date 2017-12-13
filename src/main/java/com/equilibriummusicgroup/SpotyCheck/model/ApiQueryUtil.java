@@ -66,7 +66,7 @@ public class ApiQueryUtil {
                         System.out.println("RETRY AFTER: " + this.retryAfterSeconds + " seconds!");
 //                        throw new CustomException(seconds);
                     } else {
-                        System.out.println("NO RETRY AFTER!");
+                        //System.out.println("NO RETRY AFTER!");
                     }
                 }
                 System.out.println("Header Name: " + key);
@@ -76,18 +76,18 @@ public class ApiQueryUtil {
             }
             this.responseCode = httpCon.getResponseCode();
 
-//            this.responseCode = 201;
+//            this.responseCode = 502;
             if (this.responseCode == 429) {
-                System.out.println("LINE 80 RESPONSE CODE: " + this.responseCode);
+                System.out.println("ApiQueryUtil LINE 81 Response Code : " + this.responseCode);
                 throw new CustomException.ResponseCodeException(this.retryAfterSeconds);
             } else if (this.responseCode != 200){
-                System.out.println("LINE 83 RESPONSE CODE: " + this.responseCode);
-                throw new CustomException("Response code is: " + this.responseCode);
+                System.out.println("ApiQueryUtil LINE 84 Response Code : " + this.responseCode);
+                throw new CustomException("Response Code : " + this.responseCode);
 
             }
 
-            System.out.println("\nSending 'GET' request to URL : " + url);
-            System.out.println("Response Code : " + responseCode);
+            System.out.println("\nApiQueryUtil Sending 'GET' request to URL : " + url);
+            System.out.println("ApiQueryUtil Response Code : " + responseCode);
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(httpCon.getInputStream()));

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckArtistsNameIdController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckArtistsNameIdController">
 <top>
 <VBox BorderPane.alignment="CENTER">
     <children>
@@ -80,6 +80,11 @@
                 <Insets left="85.0" top="150.0" />
             </VBox.margin>
         </Button>
+            <Button mnemonicParsing="false" onAction="#getSuggestions" prefHeight="27.0" prefWidth="127.0" text="Get Suggestions">
+               <VBox.margin>
+                  <Insets left="55.0" top="5.0" />
+               </VBox.margin>
+            </Button>
         <Button fx:id="clearButton" cancelButton="true" mnemonicParsing="false" onAction="#clearButton" text="CLEAR">
             <VBox.margin>
                 <Insets left="90.0" top="20.0" />

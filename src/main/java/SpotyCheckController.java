@@ -71,37 +71,25 @@ public class SpotyCheckController {
 
     @FXML
     void checkButton(ActionEvent event) throws IOException {
-        //this.outputTextField.clear();
+
         this.resultsTextArea.clear();
         if (this.upcTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of UPCs first!");
         }
 
         scanner = new Scanner(upcTextArea.getText());
-
         upcList = new ArrayList<>();
 
         while (scanner.hasNextLine()) {
 
             String upc = scanner.nextLine();
-            if(upc.matches("[0-9]{13}")){
+            if (upc.matches("[0-9]{13}") || upc.matches("[0-9]{12}")) {
                 upcList.add(upc);
-            } else{
+            } else {
                 displayErrorMessage("UPC format error!");
                 return;
             }
-
-
-
-
         }
-        /*for (String st: upcList) {
-            System.out.println(st);
-
-        }*/
-
-
-        //upcList.removeAll(Arrays.asList(null,""));
 
         Task<List<String>> task = new Task<List<String>>() {
 
@@ -112,7 +100,7 @@ public class SpotyCheckController {
                 updateProgress(-1, -1);
 
                 List<String> upcResult = new ArrayList<>();
-
+                int result = 0;
 
                 for (String st : upcList) {
                     System.out.println(st);
@@ -121,19 +109,10 @@ public class SpotyCheckController {
 
                     String link = ("https://api.spotify.com/v1/search?q=upc:" + st + "&type=album");
                     System.out.println("LINK: " + link);
-                    int result = 0;
 
 //                    upcResult.add(81 + ", " + result + System.lineSeparator());
 
-                        result = modelCopy.getTotal(link);
-
-
-
-
-                    /*if(result == -1){
-                        displayExceptionDialog("Response Code is not 200!");
-                    }*/
-
+                    result = modelCopy.getTotal(link);
 
                     upcResult.add(st + ", " + result + System.lineSeparator());
                 }
@@ -159,20 +138,11 @@ public class SpotyCheckController {
             @Override
             public void handle(WorkerStateEvent event) {
                 Throwable ex = task.getException();
+                ex.printStackTrace();
                 String message = ex.getMessage();
-                System.out.println("LINE 170 MESSAGE: " + message);
-                displayExceptionDialog(ex,"Response code error!");
+                System.out.println("LINE 142 MESSAGE: " + message);
+                displayExceptionDialog(ex, "Response code error!");
                 enableButtons();
-            }
-        });
-
-        task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-
-                enableButtons();
-                System.out.println("setonCancelled");
-
             }
         });
 
@@ -183,6 +153,7 @@ public class SpotyCheckController {
         th.start();
 
     }
+
 
     private void disableButtons() {
         checkButton.setDisable(true);
@@ -453,13 +424,13 @@ public class SpotyCheckController {
                         IDsLinkList.add(linkId);
                         //linkId = new StringBuilder(); //or should I clear() it?
                         continue;
-                    } else if ( i > 0 && i % 20 == 19){
+                    } else if (i > 0 && i % 20 == 19) {
                         linkId.append(albumId.get(i));
                         System.out.println("LINE 416 linkId = " + linkId.toString());
                         IDsLinkList.add(linkId);
                         linkId = new StringBuilder("https://api.spotify.com/v1/albums/?ids="); //or should I clear() it?
                         continue;
-                    }else if (i == albumId.size() - 1){
+                    } else if (i == albumId.size() - 1) {
                         linkId.append(albumId.get(i));
                         System.out.println("LINE 416 linkId = " + linkId.toString());
                         IDsLinkList.add(linkId);

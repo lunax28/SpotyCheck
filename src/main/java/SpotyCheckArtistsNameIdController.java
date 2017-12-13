@@ -3,11 +3,15 @@
  */
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import com.equilibriummusicgroup.SpotyCheck.model.CustomException;
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -18,6 +22,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class SpotyCheckArtistsNameIdController {
@@ -100,10 +106,11 @@ public class SpotyCheckArtistsNameIdController {
                     String result = modelCopy.getArtistInfo(link, st);
 
                     if(result.isEmpty()){
-                        result = "NOT FOUND";
+                        result = "NOT FOUND\n";
                     }
 
-                    nameResult.add(st + ", " + result + System.lineSeparator());
+                    //nameResult.add(st + ", " + result);
+                    nameResult.add(result);
                 }
                 updateProgress(1,1);
                 return nameResult;
@@ -123,6 +130,18 @@ public class SpotyCheckArtistsNameIdController {
             }
         });
 
+        task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                Throwable ex = task.getException();
+                ex.printStackTrace();
+                String message = ex.getMessage();
+                System.out.println("LINE 142 MESSAGE: " + message);
+                displayExceptionDialog(ex, "Response code error!");
+                enableButtons();
+            }
+        });
+
         progressBar.progressProperty().bind(task.progressProperty());
 
         Thread th = new Thread(task);
@@ -131,6 +150,54 @@ public class SpotyCheckArtistsNameIdController {
 
 
     }
+
+
+
+    @FXML
+    void getSuggestions(ActionEvent event) {
+        this.resultsTextArea.clear();
+        if(this.nameTextArea.getText().isEmpty()){
+            displayErrorMessage("Make sure to add a list of artists first!");
+        }
+
+        scanner = new Scanner(nameTextArea.getText());
+
+        Model modelCopy = new Model();
+
+        while (scanner.hasNextLine()) {
+
+            String artist = scanner.nextLine();
+
+            String artistUrlEncoded = urlEncode(artist);
+
+            String artistNameWhitespaceEscaped = String.format("%s", artistUrlEncoded).replaceAll("\\s","%20");
+
+            String link = ("https://api.spotify.com/v1/search?q=" + artistNameWhitespaceEscaped + "&type=artist&limit=50");
+
+            List<String> artistList = null;
+            try {
+                artistList = modelCopy.getSuggestions(link);
+            } catch (CustomException.ResponseCodeException e) {
+                e.printStackTrace();
+            } catch (CustomException e) {
+                e.printStackTrace();
+            }
+
+
+            for(String listArtist:  artistList){
+                this.resultsTextArea.appendText(listArtist);
+            }
+
+
+
+        }
+
+    }
+
+
+
+
+
 
     private void disableButtons() {
         checkNameButton.setDisable(true);
@@ -228,5 +295,39 @@ public class SpotyCheckArtistsNameIdController {
 
     public void setModel(Model model){
         this.model = model;
+    }
+
+    private void displayExceptionDialog(Throwable ex, String exceptionMessage) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Exception Dialog");
+        alert.setHeaderText("Exception");
+        alert.setContentText(exceptionMessage);
+
+        // Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+        alert.showAndWait();
     }
 }

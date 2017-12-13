@@ -11,6 +11,7 @@ public class Model {
 
     private ApiQueryUtil apiQuery;
     private int failCount = 0;
+    private int secondsToWait = 0;
 
 
     public Model(){
@@ -25,6 +26,10 @@ public class Model {
      *          <p> 1 - The album associated with this UPC exists</p>
      */
     public int getTotal(String link) throws InterruptedException, CustomException, CustomException.ResponseCodeException {
+        if(secondsToWait>0){
+            Thread.sleep(secondsToWait * 3000);
+        }
+
         if(failCount>5){
             throw new CustomException("Too many attempts");
         }
@@ -33,17 +38,17 @@ public class Model {
 
         try {
             jsonResponse = apiQuery.getJson(link);
+            System.out.println("Model line 36 jsonResponse: " + jsonResponse.toString());
         } catch (CustomException.ResponseCodeException e) {
-            int secondsToWait = Integer.parseInt(e.getMessage());
-            Thread.sleep(secondsToWait * 3000);
+            secondsToWait = Integer.parseInt(e.getMessage());
             failCount++;
             System.out.println("FAILCOUNT: " + failCount);
-            getTotal(link);
+            this.getTotal(link);
         } catch(CustomException e){
             System.out.println("LINE 43 CUSTOMEXCEPTION CAUGHT");
             throw new CustomException(e.getMessage());
         }
-        System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+        System.out.println("Model line 47 jsonResponse: " + jsonResponse.toString());
 
         boolean checkAlbum = this.isAlbum(jsonResponse);
 
@@ -226,5 +231,38 @@ public class Model {
         }
 
         return tracksList;
+    }
+
+
+
+    public List<String> getSuggestions(String finalLink) throws CustomException.ResponseCodeException, CustomException {
+
+        System.out.println("getSuggestionsLink: " + finalLink);
+
+        List<String> artistList = new ArrayList<>();
+
+        JsonObject jsonResponse = apiQuery.getJson(finalLink);
+
+        JsonObject artistObject = jsonResponse.get("artists").getAsJsonObject();
+        System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+
+        JsonArray artistArray = artistObject.get("items").getAsJsonArray();
+
+        for (int i = 0; i < artistArray.size(); i++) {
+
+            JsonObject nextArtist = artistArray.get(i).getAsJsonObject();
+
+            String artistName = nextArtist.get("name").getAsString();
+
+            String id = nextArtist.get("id").getAsString();
+
+            artistList.add(artistName + "; " + id + System.lineSeparator());
+
+        }
+
+
+            return artistList;
+
+
     }
 }

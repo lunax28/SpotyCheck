@@ -19,7 +19,7 @@ public class Model {
     }
 
     /**
-     * Checks whether an Album exists
+     * Checks whether an Album exists on Spotify
      * @param link the constructed link to query the web API
      * @return <p>int:</p>
      *          <p> 0 - The album associated with this UPC does not exist</p>
@@ -108,7 +108,7 @@ public class Model {
     }
 
     /**
-     * Checks for Album validity for <b>getInfo()</b> method
+     * Convenience method for Album validity for <b>getInfo()</b> method
      * @param jsonResponse the JsonObject returned by <b>getJson()</b>
      * @return <p>boolean</p>
      */
@@ -126,7 +126,7 @@ public class Model {
     }
 
     /**
-     * Retrieves Artist info
+     * Retrieves Artist info: <b>popularity</b>, <b>followers</b>, <b>id</b>
      * @param link the constructed link to query the web API
      * @param tmp the current artist in the TextArea
      * @return <p>String</p>
@@ -168,8 +168,11 @@ public class Model {
         return artistInfoString.toString();
     }
 
-
-
+    /**
+     * Retrieves the track names for all the albums associated with the UPC specified in the text area
+     * @param link the constructed link to query the web API
+     * @return <p>String</p>
+     */
     public String getInfoTracks(String link) throws CustomException, CustomException.ResponseCodeException {
         StringBuilder artistsString = new StringBuilder();
 
@@ -233,8 +236,11 @@ public class Model {
         return tracksList;
     }
 
-
-
+    /**
+     * Retrieves the search suggestions for the artists specified in the text area
+     * @param finalLink the constructed link to query the web API
+     * @return <p>List&lt;String&gt;</p>
+     */
     public List<String> getSuggestions(String finalLink) throws CustomException.ResponseCodeException, CustomException {
 
         System.out.println("getSuggestionsLink: " + finalLink);
@@ -254,14 +260,42 @@ public class Model {
 
             String artistName = nextArtist.get("name").getAsString();
 
-            String id = nextArtist.get("id").getAsString();
+            String uri = nextArtist.get("uri").getAsString();
 
-            artistList.add(artistName + "; " + id + System.lineSeparator());
+            JsonObject followersObj = nextArtist.get("followers").getAsJsonObject();
+            int followers = followersObj.get("total").getAsInt();
+
+            artistList.add(artistName + "; " + uri + "; " + followers + System.lineSeparator());
 
         }
 
-
             return artistList;
+
+    }
+
+    public List<String> getArtistsFollowers(String link) throws CustomException.ResponseCodeException, CustomException {
+        List<String> artistList = new ArrayList<>();
+        JsonObject jsonResponse = apiQuery.getJson(link);
+
+        JsonArray artistsArray = jsonResponse.get("artists").getAsJsonArray();
+
+        for (int i = 0; i < artistsArray.size(); i++) {
+
+            JsonObject nextArtist = artistsArray.get(i).getAsJsonObject();
+
+            String artistName = nextArtist.get("name").getAsString();
+
+            int popularity = nextArtist.get("popularity").getAsInt();
+
+            JsonObject followersObj = nextArtist.get("followers").getAsJsonObject();
+            int followers = followersObj.get("total").getAsInt();
+
+            artistList.add(artistName + "; " + followers + "; " + popularity + System.lineSeparator());
+
+        }
+
+        return artistList;
+
 
 
     }

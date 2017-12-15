@@ -4,10 +4,7 @@
 
 import java.io.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-
-import com.equilibriummusicgroup.SpotyCheck.model.CustomException;
 import com.equilibriummusicgroup.SpotyCheck.model.Model;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -18,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
@@ -331,6 +327,11 @@ public class SpotyCheckController {
         stage.show();
 
     }
+
+
+
+
+
 
     @FXML
     void getInfoTracks() {

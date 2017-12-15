@@ -104,6 +104,7 @@ public class ApiQueryUtil {
         } catch (IOException ex) {
             System.out.println("IOException!!");
         }
+        //TODO Add finally clause and improve the exception handling.
 
         this.responseTrimmed = response.trim();
 

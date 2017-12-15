@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 
 public class SpotyCheckArtistsNameIdController {
 
-
     private Scanner scanner;
 
     @FXML
@@ -55,14 +54,15 @@ public class SpotyCheckArtistsNameIdController {
 
     private List<String> nameList;
 
+    private List<String> artistIdList;
+
     @FXML
     void checkNameButton(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if(this.nameTextArea.getText().isEmpty()){
+        if (this.nameTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of artists first!");
         }
-
 
 
         scanner = new Scanner(nameTextArea.getText());
@@ -75,44 +75,43 @@ public class SpotyCheckArtistsNameIdController {
 
         }
 
-        Task< List<String>> task = new Task< List<String>>() {
+        Task<List<String>> task = new Task<List<String>>() {
 
             @Override
             protected List<String> call() throws Exception {
 
                 disableButtons();
-                updateProgress(-1,-1);
+                updateProgress(-1, -1);
 
-                List<String>nameResult = new ArrayList<>();
+                List<String> nameResult = new ArrayList<>();
 
 
-
-                for (String st: nameList) {
+                for (String st : nameList) {
                     System.out.println(st);
 
                     Model modelCopy = new Model();
 
                     String urlEncodedString = urlEncode(st);
 
-                    if(urlEncodedString.isEmpty()){
+                    if (urlEncodedString.isEmpty()) {
                         return null;
                     }
 
-                    String artistName = String.format("%s", urlEncodedString).replaceAll("\\s","%20");
+                    String artistName = String.format("%s", urlEncodedString).replaceAll("\\s", "%20");
 
                     String link = ("https://api.spotify.com/v1/search?q=" + artistName + "&type=artist");
                     System.out.println("LINK: " + link);
 
                     String result = modelCopy.getArtistInfo(link, st);
 
-                    if(result.isEmpty()){
+                    if (result.isEmpty()) {
                         result = "NOT FOUND\n";
                     }
 
                     //nameResult.add(st + ", " + result);
                     nameResult.add(result);
                 }
-                updateProgress(1,1);
+                updateProgress(1, 1);
                 return nameResult;
             }
         };
@@ -121,7 +120,7 @@ public class SpotyCheckArtistsNameIdController {
             @Override
             public void handle(WorkerStateEvent event) {
                 List<String> resultList = task.getValue();
-                for (String st: resultList) {
+                for (String st : resultList) {
                     resultsTextArea.appendText(st);
                 }
                 //resultsTextArea.appendText(resultList.toString());
@@ -151,12 +150,10 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-
-
     @FXML
     void getSuggestions(ActionEvent event) {
         this.resultsTextArea.clear();
-        if(this.nameTextArea.getText().isEmpty()){
+        if (this.nameTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of artists first!");
         }
 
@@ -170,7 +167,7 @@ public class SpotyCheckArtistsNameIdController {
 
             String artistUrlEncoded = urlEncode(artist);
 
-            String artistNameWhitespaceEscaped = String.format("%s", artistUrlEncoded).replaceAll("\\s","%20");
+            String artistNameWhitespaceEscaped = String.format("%s", artistUrlEncoded).replaceAll("\\s", "%20");
 
             String link = ("https://api.spotify.com/v1/search?q=" + artistNameWhitespaceEscaped + "&type=artist&limit=50");
 
@@ -184,20 +181,14 @@ public class SpotyCheckArtistsNameIdController {
             }
 
 
-            for(String listArtist:  artistList){
+            for (String listArtist : artistList) {
                 this.resultsTextArea.appendText(listArtist);
             }
-
 
 
         }
 
     }
-
-
-
-
-
 
     private void disableButtons() {
         checkNameButton.setDisable(true);
@@ -214,8 +205,7 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-    public String urlEncode(String source)
-    {
+    public String urlEncode(String source) {
         try {
             return URLEncoder.encode(source, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -235,12 +225,12 @@ public class SpotyCheckArtistsNameIdController {
     @FXML
     void backButton(ActionEvent event) throws IOException {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml"));
 
         Parent root = loader.load();
 
-        SpotyCheckController controller = loader.getController() ;
-        controller.setModel(this.model) ;
+        SpotyCheckController controller = loader.getController();
+        controller.setModel(this.model);
 
         Stage stage = (Stage) backButtonId.getScene().getWindow();
         Scene scene = new Scene(root);
@@ -276,7 +266,7 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-    public void displayErrorMessage(String textMessage){
+    public void displayErrorMessage(String textMessage) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning!");
         alert.setContentText(textMessage);
@@ -285,15 +275,15 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    @FXML
+        // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert nameTextArea != null : "fx:id=\"nameTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
         assert resultsTextArea != null : "fx:id=\"resultsTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
 
     }
 
-    public void setModel(Model model){
+    public void setModel(Model model) {
         this.model = model;
     }
 
@@ -329,5 +319,187 @@ public class SpotyCheckArtistsNameIdController {
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
         alert.showAndWait();
+    }
+
+
+    @FXML
+    void getArtistsFollowers() {
+
+        System.out.println("getArtistsFollowers() called");
+        this.resultsTextArea.clear();
+
+        //check also whether there are UPCs!!! whitespaces may still be present
+        if (this.nameTextArea.getText().isEmpty()) {
+            displayErrorMessage("Make sure to add a list of UPCs first!");
+            return;
+        }
+
+        scanner = new Scanner(nameTextArea.getText());
+
+        //a list containing several endpoints in case the user has inserted more than 50 IDs
+        List<StringBuilder> linkList = new ArrayList<>();
+
+        //a list containing only artists' IDs
+        artistIdList = new ArrayList<>();
+
+
+        while (scanner.hasNextLine()) {
+
+            artistIdList.add(scanner.nextLine());
+
+        }
+
+        StringBuilder artistsIdBuilder = new StringBuilder("https://api.spotify.com/v1/artists?ids=");
+
+        for (int i = 1; i <= artistIdList.size(); i++) {
+
+            if (i == artistIdList.size()) {
+                artistsIdBuilder.append(artistIdList.get(i-1));
+                linkList.add(artistsIdBuilder);
+                break;
+            }
+
+
+            if(i % 50 == 0){
+                artistsIdBuilder.append(artistIdList.get(i-1));
+                linkList.add(artistsIdBuilder);
+                artistsIdBuilder = new StringBuilder("https://api.spotify.com/v1/artists?ids=");
+                continue;
+
+
+            }
+
+            artistsIdBuilder.append(artistIdList.get(i-1) + ",");
+
+        }
+
+        System.out.println("Printing linkList: ");
+        for(StringBuilder sb : linkList){
+            System.out.println(sb.toString());
+
+            List<String> result = new ArrayList<>();
+            try {
+                result = model.getArtistsFollowers(sb.toString());
+            } catch (CustomException.ResponseCodeException e) {
+                e.printStackTrace();
+            } catch (CustomException e) {
+                e.printStackTrace();
+            }
+
+            for(String artist : result){
+
+                resultsTextArea.appendText(artist);
+
+            }
+
+
+        }
+
+        //System.out.println("SEVERAL ARTISTS ID LINK: " + artistsIdBuilder.toString());
+
+
+        /*Task<List<String>> task = new Task<List<String>>() {
+
+            @Override
+            protected List<String> call() throws Exception {
+
+                disableButtons();
+                updateProgress(-1, -1);
+
+                List<String> albumId = new ArrayList<>();
+
+                //for loop to extract album IDs for each UPC
+                for (String upc : upcList) {
+                    System.out.println(upc);
+
+                    String link = ("https://api.spotify.com/v1/search?q=upc:" + upc + "&type=album");
+                    System.out.println("LINK: " + link);
+
+                    String resultId = model.getInfoTracks(link);
+
+                    if (resultId != null) {
+                        albumId.add(resultId);
+                    }
+
+
+                }
+
+                List<StringBuilder> IDsLinkList = new ArrayList<>();
+                StringBuilder linkId = new StringBuilder();
+                linkId.append("https://api.spotify.com/v1/albums/?ids=");
+
+                for (int i = 0; i < albumId.size(); i++) {
+                    System.out.println("albumId: " + albumId.get(i));
+
+
+                    if (i < 20 && i == albumId.size() - 1) {
+                        linkId.append(albumId.get(i));
+                        System.out.println("LINE 410 linkId = " + linkId.toString());
+                        IDsLinkList.add(linkId);
+                        //linkId = new StringBuilder(); //or should I clear() it?
+                        continue;
+                    } else if (i > 0 && i % 20 == 19) {
+                        linkId.append(albumId.get(i));
+                        System.out.println("LINE 416 linkId = " + linkId.toString());
+                        IDsLinkList.add(linkId);
+                        linkId = new StringBuilder("https://api.spotify.com/v1/albums/?ids="); //or should I clear() it?
+                        continue;
+                    } else if (i == albumId.size() - 1) {
+                        linkId.append(albumId.get(i));
+                        System.out.println("LINE 416 linkId = " + linkId.toString());
+                        IDsLinkList.add(linkId);
+                        continue;
+                    }
+
+                    linkId.append(albumId.get(i) + ",");
+
+                }
+
+                List<String> trackNamesList = new ArrayList<>();
+
+                for (StringBuilder sb : IDsLinkList) {
+
+                    List<String> trackList = new ArrayList<>();
+                    trackList = model.getTrackList(sb.toString());
+
+                    for (String track : trackList) {
+
+                        trackNamesList.add(track);
+
+                    }
+                }
+                //array that collects every track in those albums
+
+                updateProgress(1, 1);
+                return trackNamesList;
+            }
+        };
+
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                //StringBuilder tracksResult = new StringBuilder();
+                List<String> resultList = task.getValue();
+                for (String st : resultList) {
+                    //resultsTextArea.appendText(st);
+                    resultsTextArea.appendText(st);
+                    System.out.println("LINE 455 st: " + st);
+                }
+                System.out.println("*#*#TEST*#*#");
+                //resultsTextArea.appendText(resultList.toString());
+                //outputTextField.setText("SUCCESS!");
+                enableButtons();
+
+                System.out.println("END OF TASK LINE 463");
+
+            }
+        });
+
+        progressBar.progressProperty().bind(task.progressProperty());
+
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+    }*/
     }
 }

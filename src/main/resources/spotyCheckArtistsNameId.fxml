@@ -80,7 +80,7 @@
                 <Insets left="85.0" top="150.0" />
             </VBox.margin>
         </Button>
-            <Button mnemonicParsing="false" onAction="#getSuggestions" prefHeight="27.0" prefWidth="127.0" text="Get Suggestions">
+            <Button mnemonicParsing="false" onAction="#getArtistsFollowers" prefHeight="27.0" prefWidth="127.0" text="Get Suggestions">
                <VBox.margin>
                   <Insets left="55.0" top="5.0" />
                </VBox.margin>

@@ -330,7 +330,7 @@ public class SpotyCheckArtistsNameIdController {
 
         //check also whether there are UPCs!!! whitespaces may still be present
         if (this.nameTextArea.getText().isEmpty()) {
-            displayErrorMessage("Make sure to add a list of UPCs first!");
+            displayErrorMessage("Make sure to add a list of Artists' IDs first!");
             return;
         }
 
@@ -384,9 +384,6 @@ public class SpotyCheckArtistsNameIdController {
                 e.printStackTrace();
             } catch (CustomException e) {
                 e.printStackTrace();
-            } catch(IllegalStateException e){
-                e.printStackTrace();
-                displayExceptionDialog(e,"No Artist found with that name! Try again!");
             }
 
             for(String artist : result){
@@ -402,39 +399,26 @@ public class SpotyCheckArtistsNameIdController {
 
 
         /*Task<List<String>> task = new Task<List<String>>() {
-
             @Override
             protected List<String> call() throws Exception {
-
                 disableButtons();
                 updateProgress(-1, -1);
-
                 List<String> albumId = new ArrayList<>();
-
                 //for loop to extract album IDs for each UPC
                 for (String upc : upcList) {
                     System.out.println(upc);
-
                     String link = ("https://api.spotify.com/v1/search?q=upc:" + upc + "&type=album");
                     System.out.println("LINK: " + link);
-
                     String resultId = model.getInfoTracks(link);
-
                     if (resultId != null) {
                         albumId.add(resultId);
                     }
-
-
                 }
-
                 List<StringBuilder> IDsLinkList = new ArrayList<>();
                 StringBuilder linkId = new StringBuilder();
                 linkId.append("https://api.spotify.com/v1/albums/?ids=");
-
                 for (int i = 0; i < albumId.size(); i++) {
                     System.out.println("albumId: " + albumId.get(i));
-
-
                     if (i < 20 && i == albumId.size() - 1) {
                         linkId.append(albumId.get(i));
                         System.out.println("LINE 410 linkId = " + linkId.toString());
@@ -453,31 +437,21 @@ public class SpotyCheckArtistsNameIdController {
                         IDsLinkList.add(linkId);
                         continue;
                     }
-
                     linkId.append(albumId.get(i) + ",");
-
                 }
-
                 List<String> trackNamesList = new ArrayList<>();
-
                 for (StringBuilder sb : IDsLinkList) {
-
                     List<String> trackList = new ArrayList<>();
                     trackList = model.getTrackList(sb.toString());
-
                     for (String track : trackList) {
-
                         trackNamesList.add(track);
-
                     }
                 }
                 //array that collects every track in those albums
-
                 updateProgress(1, 1);
                 return trackNamesList;
             }
         };
-
         task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
@@ -492,14 +466,10 @@ public class SpotyCheckArtistsNameIdController {
                 //resultsTextArea.appendText(resultList.toString());
                 //outputTextField.setText("SUCCESS!");
                 enableButtons();
-
                 System.out.println("END OF TASK LINE 463");
-
             }
         });
-
         progressBar.progressProperty().bind(task.progressProperty());
-
         Thread th = new Thread(task);
         th.setDaemon(true);
         th.start();

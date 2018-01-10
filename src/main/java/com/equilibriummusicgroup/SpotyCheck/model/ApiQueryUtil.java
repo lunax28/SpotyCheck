@@ -103,6 +103,8 @@ public class ApiQueryUtil {
             System.out.println("ProtocolException!!");
         } catch (IOException ex) {
             System.out.println("IOException!!");
+        } finally{
+
         }
         //TODO Add finally clause and improve the exception handling.
 

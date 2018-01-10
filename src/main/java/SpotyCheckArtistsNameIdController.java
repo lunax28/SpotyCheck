@@ -384,6 +384,9 @@ public class SpotyCheckArtistsNameIdController {
                 e.printStackTrace();
             } catch (CustomException e) {
                 e.printStackTrace();
+            } catch(IllegalStateException e){
+                e.printStackTrace();
+                displayExceptionDialog(e,"No Artist found with that name! Try again!");
             }
 
             for(String artist : result){

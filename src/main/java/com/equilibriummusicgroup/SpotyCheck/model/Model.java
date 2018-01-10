@@ -280,8 +280,15 @@ public class Model {
         JsonArray artistsArray = jsonResponse.get("artists").getAsJsonArray();
 
         for (int i = 0; i < artistsArray.size(); i++) {
+            JsonObject nextArtist;
 
-            JsonObject nextArtist = artistsArray.get(i).getAsJsonObject();
+            try{
+                nextArtist = artistsArray.get(i).getAsJsonObject();
+            } catch (IllegalStateException e){
+                throw e;
+            }
+
+
 
             String artistName = nextArtist.get("name").getAsString();
 

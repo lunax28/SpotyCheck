@@ -243,34 +243,55 @@ public class Model {
      */
     public List<String> getSuggestions(String finalLink) throws CustomException.ResponseCodeException, CustomException {
 
+        String nextLink = "";
         System.out.println("getSuggestionsLink: " + finalLink);
+        JsonObject jsonResponse = null;
 
         List<String> artistList = new ArrayList<>();
 
-        JsonObject jsonResponse = apiQuery.getJson(finalLink);
+        //for loop to retrieve multiple pages. Look at the AM API doc
+        for (int x = 0; x < 2; x++) {
 
-        JsonObject artistObject = jsonResponse.get("artists").getAsJsonObject();
-        System.out.println("JSON RESPONSE: " + jsonResponse.toString());
+            if (x<1) {
+                jsonResponse = apiQuery.getJson(finalLink);
+                System.out.println("x<1 First Pass");
 
-        JsonArray artistArray = artistObject.get("items").getAsJsonArray();
+            } else if(!nextLink.isEmpty()) {
+                System.out.println("LINE 260 nextLink: " + nextLink);
+                jsonResponse = apiQuery.getJson(nextLink);
+            }
 
-        for (int i = 0; i < artistArray.size(); i++) {
+            JsonObject artistObject = jsonResponse.get("artists").getAsJsonObject();
 
-            JsonObject nextArtist = artistArray.get(i).getAsJsonObject();
+            if (!artistObject.get("next").toString().equals("null") && !artistObject.get("next").isJsonNull()){
+                nextLink = artistObject.get("next").getAsString();
+            }
 
-            String artistName = nextArtist.get("name").getAsString();
+            JsonArray artistArray = artistObject.get("items").getAsJsonArray();
 
-            String uri = nextArtist.get("uri").getAsString();
+            for (int i = 0; i < artistArray.size(); i++) {
 
-            JsonObject followersObj = nextArtist.get("followers").getAsJsonObject();
-            int followers = followersObj.get("total").getAsInt();
+                JsonObject nextArtist = artistArray.get(i).getAsJsonObject();
+                String artistName = nextArtist.get("name").getAsString();
+                String uri = nextArtist.get("uri").getAsString();
+                JsonObject followersObj = nextArtist.get("followers").getAsJsonObject();
+                int followers = followersObj.get("total").getAsInt();
 
-            artistList.add(artistName + "; " + uri + "; " + followers + System.lineSeparator());
-
+                artistList.add(artistName + "; " + uri + "; " + followers + System.lineSeparator());
+            }
         }
-
         return artistList;
+    }
 
+    /**
+     * Helper method to check whether the json retrieved has the field passed as a parameter the <code>jsonResponse</code> from the <code>com.equilibriummusicgroup.AMCharts.model.JsonQueryUtils</code>class.
+     *
+     * @param gson the json object retrieved
+     * @param key  the key against which the check is made
+     * @return Boolean
+     */
+    private Boolean checkNode(JsonObject gson, String key) {
+        return gson.has(key);
     }
 
     public List<String> getArtistsFollowers(String link) throws CustomException.ResponseCodeException, CustomException {

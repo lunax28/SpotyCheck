@@ -184,10 +184,7 @@ public class SpotyCheckArtistsNameIdController {
             for (String listArtist : artistList) {
                 this.resultsTextArea.appendText(listArtist);
             }
-
-
         }
-
     }
 
     private void disableButtons() {

@@ -24,10 +24,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml")) ;
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckPlaylists.fxml")) ;
 
             BorderPane root = (BorderPane)loader.load();
-            SpotyCheckController controller = loader.getController();
+            SpotyCheckPlaylists controller = loader.getController();
             Model model = new Model();
             controller.setModel(model) ;
 

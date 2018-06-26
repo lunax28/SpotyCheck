@@ -59,6 +59,32 @@ public class Model {
         return 0;
     }
 
+
+    public String getPlaylistsFollowers(String link, String id) {
+
+        StringBuilder artistsString = new StringBuilder();
+
+        JsonObject jsonResponse = null;
+        try {
+            jsonResponse = apiQuery.getJson(link);
+        } catch (CustomException e) {
+            e.printStackTrace();
+        } catch (CustomException.ResponseCodeException e) {
+            e.printStackTrace();
+        }
+        System.out.println("PLAYLISTS JSON RESPONSE: " + jsonResponse.toString());
+
+        JsonObject followersObject = jsonResponse.getAsJsonObject("followers");
+
+        int followers = followersObject.get("total").getAsInt();
+
+
+
+        return id + ", " + followers + "\n";
+
+
+    }
+
     /**
      * Retrieves Album Info
      * @param link the constructed link to query the web API
@@ -320,4 +346,7 @@ public class Model {
 
 
     }
+
+
+
 }

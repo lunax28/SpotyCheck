@@ -59,6 +59,23 @@ public class Model {
         return 0;
     }
 
+    public JsonObject getAlbumInfo ( String link){
+
+        JsonObject jsonResponse = null;
+        try {
+            jsonResponse = apiQuery.getJson(link);
+        } catch (CustomException e) {
+            e.printStackTrace();
+        } catch (CustomException.ResponseCodeException e) {
+            e.printStackTrace();
+        }
+
+        return jsonResponse;
+
+
+
+    }
+
 
     public String getPlaylistsFollowers(String link, String id) {
 

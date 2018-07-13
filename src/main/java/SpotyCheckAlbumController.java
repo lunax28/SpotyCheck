@@ -87,7 +87,19 @@ public class SpotyCheckAlbumController {
 
         JsonObject albums = result.getAsJsonObject("albums");
 
+
+        int total = albums.get("total").getAsInt();
+
+        if(total == 0){
+
+            displayErrorMessage("No Album associated with that UPC! Try Again!");
+            return;
+
+        }
+
         JsonArray items = albums.getAsJsonArray("items");
+
+
 
         JsonObject item = items.get(0).getAsJsonObject();
 

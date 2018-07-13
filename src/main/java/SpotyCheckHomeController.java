@@ -52,7 +52,18 @@ public class SpotyCheckHomeController {
     }
 
     @FXML
-    void changeArtistsScene(ActionEvent event) {
+    void changeArtistsScene(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtists.fxml"));
+
+        Parent root = loader.load();
+        SpotyCheckArtistsController controller = loader.getController();
+        controller.setModel(this.model);
+
+        Stage stage = (Stage) artistsButton.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
 
     }
 

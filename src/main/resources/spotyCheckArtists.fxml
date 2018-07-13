@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckArtistsController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <VBox BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Artist Info">
+                            <HBox.margin>
+                                <Insets />
+                            </HBox.margin>
+                        </Label>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="15.0" top="15.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Label text="NAME">
+                            <HBox.margin>
+                                <Insets right="18.0" />
+                            </HBox.margin></Label>
+                        <TextField fx:id="artistNameSearchTextField">
+                            <HBox.margin>
+                                <Insets right="50.0" />
+                            </HBox.margin>
+                        </TextField>
+                        <Button fx:id="checkArtistButton" mnemonicParsing="false" onAction="#checkArtist" style="-fx-background-color: #329DE7;" text="CHECK" textFill="WHITE">
+                            <font>
+                                <Font name="Helvetica Neue Bold" size="13.0" />
+                            </font>
+                            <HBox.margin>
+                                <Insets right="100.0" />
+                            </HBox.margin>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" top="15.0" />
+                    </VBox.margin>
+                </HBox>
+            <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="42.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="ID">
+                     <HBox.margin>
+                        <Insets right="43.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="idSearchTextField">
+                     <HBox.margin>
+                        <Insets right="50.0" />
+                     </HBox.margin>
+                  </TextField>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="30.0" />
+               </VBox.margin>
+            </HBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="580.0">
+                    <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" text="Name" textAlignment="CENTER">
+                            <HBox.margin>
+                                <Insets right="11.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="nameTextField" editable="false" prefHeight="27.0" prefWidth="524.0" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Label text="Followers">
+                            <HBox.margin>
+                                <Insets right="7.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="followersTextField" editable="false" prefHeight="27.0" prefWidth="108.0" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="289.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Label text="Popularity">
+                            <HBox.margin>
+                                <Insets right="15.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="popularityTextField" editable="false" prefHeight="27.0" prefWidth="36.0">
+                            <HBox.margin>
+                                <Insets right="10.0" />
+                            </HBox.margin>
+                        </TextField>
+                        <Label text="URI">
+                            <HBox.margin>
+                                <Insets right="10.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="uriTextField" editable="false" layoutX="44.0" layoutY="10.0" prefHeight="27.0" prefWidth="297.0">
+                            <HBox.margin>
+                                <Insets right="10.0" />
+                            </HBox.margin>
+                        </TextField>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="178.0" prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <Label text="URL">
+                            <HBox.margin>
+                                <Insets right="22.0" />
+                            </HBox.margin>
+                        </Label>
+                        <TextField fx:id="urlTextField" editable="false" prefHeight="27.0" prefWidth="486.0">
+                            <HBox.margin>
+                                <Insets right="10.0" />
+                            </HBox.margin>
+                        </TextField>
+                    </children>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="306.0" prefHeight="100.0" prefWidth="200.0" />
+            </children>
+            <BorderPane.margin>
+                <Insets left="10.0" right="10.0" top="10.0" />
+            </BorderPane.margin>
+        </VBox>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="backHomeButton" alignment="CENTER_RIGHT" contentDisplay="RIGHT" defaultButton="true" mnemonicParsing="false" onAction="#backHome" text="HOME" textAlignment="CENTER">
+                    <HBox.margin>
+                        <Insets bottom="10.0" right="10.0" />
+                    </HBox.margin>
+                </Button>
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>

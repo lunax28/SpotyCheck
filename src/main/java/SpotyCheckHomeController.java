@@ -33,7 +33,7 @@ public class SpotyCheckHomeController {
     private Button artistsButton; // Value injected by FXMLLoader
 
     @FXML // fx:id="upcButton"
-    private Button upcButton; // Value injected by FXMLLoader
+    private Button lookupButton; // Value injected by FXMLLoader
 
     @FXML
     void changeAlbumsScene(ActionEvent event) throws IOException {
@@ -68,7 +68,18 @@ public class SpotyCheckHomeController {
     }
 
     @FXML
-    void changeLookupScene(ActionEvent event) {
+    void changeLookupScene(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckArtistsNameId.fxml"));
+
+        Parent root = loader.load();
+        SpotyCheckArtistsNameIdController controller = loader.getController();
+        controller.setModel(this.model);
+
+        Stage stage = (Stage) lookupButton.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
 
     }
 
@@ -80,7 +91,7 @@ public class SpotyCheckHomeController {
     void initialize() {
         assert albumsButton != null : "fx:id=\"albumsButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
         assert artistsButton != null : "fx:id=\"artistsButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
-        assert upcButton != null : "fx:id=\"upcButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
+        assert lookupButton != null : "fx:id=\"lookupButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
 
     }
 }

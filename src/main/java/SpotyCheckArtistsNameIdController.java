@@ -36,6 +36,9 @@ public class SpotyCheckArtistsNameIdController {
     @FXML
     private Button backButtonId;
 
+    @FXML // fx:id="relatedArtistsButton"
+    private Button relatedArtistsButton; // Value injected by FXMLLoader
+
 
     @FXML // fx:id="nameTextArea"
     private TextArea nameTextArea; // Value injected by FXMLLoader
@@ -75,80 +78,85 @@ public class SpotyCheckArtistsNameIdController {
 
         }
 
-        Task<List<String>> task = new Task<List<String>>() {
-
-            @Override
-            protected List<String> call() throws Exception {
-
-                disableButtons();
-                updateProgress(-1, -1);
-
-                List<String> nameResult = new ArrayList<>();
-
-
-                for (String st : nameList) {
-                    System.out.println(st);
-
-                    Model modelCopy = new Model();
-
-                    String urlEncodedString = urlEncode(st);
-
-                    if (urlEncodedString.isEmpty()) {
-                        return null;
-                    }
-
-                    String artistName = String.format("%s", urlEncodedString).replaceAll("\\s", "%20");
-
-                    String link = ("https://api.spotify.com/v1/search?q=" + artistName + "&type=artist");
-                    System.out.println("LINK: " + link);
-
-                    String result = modelCopy.getArtistInfo(link, st);
-
-                    if (result.isEmpty()) {
-                        result = "NOT FOUND\n";
-                    }
-
-                    //nameResult.add(st + ", " + result);
-                    nameResult.add(result);
-                }
-                updateProgress(1, 1);
-                return nameResult;
-            }
-        };
-
-        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                List<String> resultList = task.getValue();
-                for (String st : resultList) {
-                    resultsTextArea.appendText(st);
-                }
-                //resultsTextArea.appendText(resultList.toString());
-                //outputTextField.setText("SUCCESS!");
-                enableButtons();
-            }
-        });
-
-        task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Throwable ex = task.getException();
-                ex.printStackTrace();
-                String message = ex.getMessage();
-                System.out.println("LINE 142 MESSAGE: " + message);
-                displayExceptionDialog(ex, "Response code error!");
-                enableButtons();
-            }
-        });
-
-        progressBar.progressProperty().bind(task.progressProperty());
-
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
-
-
+        getArtistsResults();
     }
+
+
+
+    private void getArtistsResults() {
+            Task<List<String>> task = new Task<List<String>>() {
+
+                @Override
+                protected List<String> call() throws Exception {
+
+                    disableButtons();
+                    updateProgress(-1, -1);
+
+                    List<String> nameResult = new ArrayList<>();
+
+
+                    for (String st : nameList) {
+                        System.out.println(st);
+
+                        Model modelCopy = new Model();
+
+                        String urlEncodedString = urlEncode(st);
+
+                        if (urlEncodedString.isEmpty()) {
+                            return null;
+                        }
+
+                        String artistName = String.format("%s", urlEncodedString).replaceAll("\\s", "%20");
+
+                        String link = ("https://api.spotify.com/v1/search?q=" + artistName + "&type=artist");
+                        System.out.println("LINK: " + link);
+
+                        String result = modelCopy.getArtistInfo(link, st);
+
+                        if (result.isEmpty()) {
+                            result = "NOT FOUND\n";
+                        }
+
+                        //nameResult.add(st + ", " + result);
+                        nameResult.add(result);
+                    }
+                    updateProgress(1, 1);
+                    return nameResult;
+                }
+            };
+
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    List<String> resultList = task.getValue();
+                    for (String st : resultList) {
+                        resultsTextArea.appendText(st);
+                    }
+                    //resultsTextArea.appendText(resultList.toString());
+                    //outputTextField.setText("SUCCESS!");
+                    enableButtons();
+                }
+            });
+
+            task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    Throwable ex = task.getException();
+                    ex.printStackTrace();
+                    String message = ex.getMessage();
+                    System.out.println("LINE 142 MESSAGE: " + message);
+                    displayExceptionDialog(ex, "Response code error!");
+                    enableButtons();
+                }
+            });
+
+            progressBar.progressProperty().bind(task.progressProperty());
+
+            Thread th = new Thread(task);
+            th.setDaemon(true);
+            th.start();
+    }
+
 
     @FXML
     void getSuggestions(ActionEvent event) {
@@ -222,11 +230,11 @@ public class SpotyCheckArtistsNameIdController {
     @FXML
     void backButton(ActionEvent event) throws IOException {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckGui.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckHome.fxml"));
 
         Parent root = loader.load();
 
-        SpotyCheckController controller = loader.getController();
+        SpotyCheckHomeController controller = loader.getController();
         controller.setModel(this.model);
 
         Stage stage = (Stage) backButtonId.getScene().getWindow();
@@ -263,6 +271,88 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
+    @FXML
+    void getRelatedArtists(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+        if (this.nameTextArea.getText().isEmpty()) {
+            displayErrorMessage("Make sure to add a list of artists first!");
+        }
+
+        scanner = new Scanner(nameTextArea.getText());
+
+        Model modelCopy = new Model();
+
+        while (scanner.hasNextLine()) {
+
+            String artistId = scanner.nextLine();
+
+            if(artistId.length() != 22){
+
+                displayErrorMessage("Make sure to add a list of artists IDs!");
+                return;
+            }
+
+            String link = ("https://api.spotify.com/v1/artists/"+ artistId + "/related-artists");
+
+            List<String> artistList = null;
+            try {
+                artistList = modelCopy.getRelatedArtists(link);
+            } catch (CustomException.ResponseCodeException e) {
+                e.printStackTrace();
+            } catch (CustomException e) {
+                e.printStackTrace();
+            }
+
+
+            for (String listArtist : artistList) {
+                this.resultsTextArea.appendText(listArtist);
+            }
+        }
+
+    }
+
+    @FXML
+    void getFollowers(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+        if (this.nameTextArea.getText().isEmpty()) {
+            displayErrorMessage("Make sure to add a list of artists first!");
+        }
+
+        scanner = new Scanner(nameTextArea.getText());
+
+        Model modelCopy = new Model();
+
+        while (scanner.hasNextLine()) {
+
+            String artistId = scanner.nextLine();
+
+            if(artistId.length() != 22){
+
+                displayErrorMessage("Make sure to add a list of artists IDs!");
+                return;
+            }
+
+            String link = ("https://api.spotify.com/v1/artists/"+ artistId);
+
+            List<String> artistList = null;
+            try {
+                artistList = modelCopy.getArtistsFollowers(link);
+            } catch (CustomException.ResponseCodeException e) {
+                e.printStackTrace();
+            } catch (CustomException e) {
+                e.printStackTrace();
+            }
+
+
+            for (String listArtist : artistList) {
+                this.resultsTextArea.appendText(listArtist);
+            }
+        }
+
+    }
+
     public void displayErrorMessage(String textMessage) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Warning!");
@@ -272,11 +362,15 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-    @FXML
-        // This method is called by the FXMLLoader when initialization is complete
+    @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
+        assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
         assert nameTextArea != null : "fx:id=\"nameTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert checkNameButton != null : "fx:id=\"checkNameButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert relatedArtistsButton != null : "fx:id=\"relatedArtistsButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert clearButton != null : "fx:id=\"clearButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
         assert resultsTextArea != null : "fx:id=\"resultsTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert backButtonId != null : "fx:id=\"backButtonId\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
 
     }
 

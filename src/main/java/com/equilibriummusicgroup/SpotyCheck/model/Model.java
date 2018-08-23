@@ -341,6 +341,26 @@ public class Model {
         List<String> artistList = new ArrayList<>();
         JsonObject jsonResponse = apiQuery.getJson(link);
 
+
+        String artistName = jsonResponse.get("name").getAsString();
+
+        int popularity = jsonResponse.get("popularity").getAsInt();
+
+        JsonObject followersObj = jsonResponse.get("followers").getAsJsonObject();
+        int followers = followersObj.get("total").getAsInt();
+
+        artistList.add(artistName + "; " + followers + "; " + popularity + System.lineSeparator());
+
+        return artistList;
+
+    }
+
+
+    public List<String> getRelatedArtists(String link) throws CustomException.ResponseCodeException, CustomException {
+
+        List<String> artistList = new ArrayList<>();
+        JsonObject jsonResponse = apiQuery.getJson(link);
+
         JsonArray artistsArray = jsonResponse.get("artists").getAsJsonArray();
 
         for (int i = 0; i < artistsArray.size(); i++) {
@@ -351,10 +371,9 @@ public class Model {
 
             int popularity = nextArtist.get("popularity").getAsInt();
 
-            JsonObject followersObj = nextArtist.get("followers").getAsJsonObject();
-            int followers = followersObj.get("total").getAsInt();
+            String id = nextArtist.get("id").getAsString();
 
-            artistList.add(artistName + "; " + followers + "; " + popularity + System.lineSeparator());
+            artistList.add(artistName + "; " + id + "; " + popularity + System.lineSeparator());
 
         }
 
@@ -363,7 +382,4 @@ public class Model {
 
 
     }
-
-
-
 }

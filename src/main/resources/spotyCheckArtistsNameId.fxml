@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckArtistsNameIdController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="509.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckArtistsNameIdController">
 <top>
 <VBox BorderPane.alignment="CENTER">
     <children>
@@ -56,7 +56,7 @@
 <left>
 <VBox prefHeight="334.0" prefWidth="171.0" BorderPane.alignment="CENTER">
     <children>
-        <Label alignment="CENTER" prefHeight="22.0" prefWidth="171.0" text="NAME:">
+        <Label alignment="CENTER" prefHeight="22.0" prefWidth="171.0" text="NAME OR ID:">
             <VBox.margin>
                 <Insets bottom="5.0" top="5.0" />
             </VBox.margin>
@@ -75,22 +75,32 @@
 <center>
 <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
     <children>
-        <Button fx:id="checkNameButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#checkNameButton" prefHeight="27.0" prefWidth="70.0" text="CHECK" textAlignment="CENTER">
+        <Button fx:id="checkNameButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#checkNameButton" prefHeight="27.0" prefWidth="117.0" text="Artists' Info" textAlignment="CENTER">
             <VBox.margin>
-                <Insets left="85.0" top="150.0" />
+                <Insets left="60.0" top="150.0" />
             </VBox.margin>
         </Button>
-            <Button mnemonicParsing="false" onAction="#getSuggestions" prefHeight="27.0" prefWidth="127.0" text="Get Suggestions">
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#getSuggestions" prefHeight="27.0" prefWidth="144.0" text="Search Suggestions">
                <VBox.margin>
-                  <Insets left="55.0" top="5.0" />
+                  <Insets left="47.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="followersButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="70.0" layoutY="160.0" mnemonicParsing="false" onAction="#getFollowers" prefHeight="27.0" prefWidth="144.0" style="-fx-background-color: #00D769;" text="Followers &amp; Pop" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="47.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="relatedArtistsButton" defaultButton="true" mnemonicParsing="false" onAction="#getRelatedArtists" prefHeight="27.0" prefWidth="117.0" style="-fx-background-color: #00D769;" text="Related Artists">
+               <VBox.margin>
+                  <Insets left="60.0" top="10.0" />
                </VBox.margin>
             </Button>
         <Button fx:id="clearButton" cancelButton="true" mnemonicParsing="false" onAction="#clearButton" text="CLEAR">
             <VBox.margin>
-                <Insets left="90.0" top="20.0" />
+                <Insets left="90.0" top="25.0" />
             </VBox.margin>
             <font>
-                <Font name="System Bold" size="13.0" />
+                <Font name="Helvetica Neue Bold" size="13.0" />
             </font>
         </Button>
     </children>
@@ -104,7 +114,7 @@
                 <Insets bottom="5.0" left="155.0" top="5.0" />
             </VBox.margin>
         </Label>
-        <TextArea fx:id="resultsTextArea" editable="false" prefHeight="350.0" prefWidth="384.0">
+        <TextArea fx:id="resultsTextArea" editable="false" prefHeight="359.0" prefWidth="384.0">
             <VBox.margin>
                 <Insets right="10.0" top="5.0" />
             </VBox.margin>
@@ -116,7 +126,7 @@
 </VBox>
 </right>
    <bottom>
-      <Button fx:id="backButtonId" mnemonicParsing="false" onAction="#backButton" text="&lt;- UPC" BorderPane.alignment="CENTER">
+      <Button fx:id="backButtonId" mnemonicParsing="false" onAction="#backButton" text="&lt;- HOME" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="600.0" />
          </BorderPane.margin></Button>

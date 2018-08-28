@@ -77,7 +77,7 @@
     <children>
         <Button fx:id="checkNameButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#checkNameButton" prefHeight="27.0" prefWidth="117.0" text="Artists' Info" textAlignment="CENTER">
             <VBox.margin>
-                <Insets left="60.0" top="150.0" />
+                <Insets left="60.0" top="100.0" />
             </VBox.margin>
         </Button>
             <Button defaultButton="true" mnemonicParsing="false" onAction="#getSuggestions" prefHeight="27.0" prefWidth="144.0" text="Search Suggestions">
@@ -95,9 +95,29 @@
                   <Insets left="60.0" top="10.0" />
                </VBox.margin>
             </Button>
+            <Button fx:id="isrcButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="57.0" layoutY="234.0" mnemonicParsing="false" onAction="#getIsrcLabels" prefHeight="27.0" prefWidth="117.0" style="-fx-background-color: ffcccc;" text="ISRC Labels" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="60.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="featuredPlaylistsButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="70.0" layoutY="258.0" mnemonicParsing="false" onAction="#getFeaturedPlaylists" prefHeight="27.0" prefWidth="139.0" style="-fx-background-color: #c7b0ec;" text="Featured Playlists" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="45.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="categoriesButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="10.0" layoutY="336.0" mnemonicParsing="false" onAction="#getCategoriesPlaylists" prefHeight="27.0" prefWidth="139.0" style="-fx-background-color: #c7b0ec;" text="Categories Playlists" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="45.0" top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="userPlaylistButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" layoutX="55.0" layoutY="332.0" mnemonicParsing="false" onAction="#getUsersPlaylist" prefHeight="27.0" prefWidth="139.0" style="-fx-background-color: #c7b0ec;" text="User's Playlists" textAlignment="CENTER">
+               <VBox.margin>
+                  <Insets left="45.0" top="10.0" />
+               </VBox.margin>
+            </Button>
         <Button fx:id="clearButton" cancelButton="true" mnemonicParsing="false" onAction="#clearButton" text="CLEAR">
             <VBox.margin>
-                <Insets left="90.0" top="25.0" />
+                <Insets left="90.0" top="38.0" />
             </VBox.margin>
             <font>
                 <Font name="Helvetica Neue Bold" size="13.0" />

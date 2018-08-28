@@ -108,7 +108,7 @@ public class SpotyCheckArtistsNameIdController {
 
                         String artistName = String.format("%s", urlEncodedString).replaceAll("\\s", "%20");
 
-                        String link = ("https://api.spotify.com/v1/search?q=" + artistName + "&type=artist");
+                        String link = ("https://api.spotify.com/v1/search?q=" + artistName + "&type=artist&limit=50");
                         System.out.println("LINK: " + link);
 
                         String result = modelCopy.getArtistInfo(link, st);
@@ -353,64 +353,54 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
-    public void displayErrorMessage(String textMessage) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
-        alert.setContentText(textMessage);
-        alert.showAndWait();
-        return;
+    @FXML
+    void getIsrcLabels(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+        if (this.nameTextArea.getText().isEmpty()) {
+            displayErrorMessage("Make sure to add a list of ISRC!");
+        }
+
+        scanner = new Scanner(nameTextArea.getText());
+
+        Model modelCopy = new Model();
+
+        while (scanner.hasNextLine()) {
+
+            String isrc = scanner.nextLine();
+
+            /*if(artistId.length() != 22){
+
+                displayErrorMessage("Make sure to add a list of artists IDs!");
+                return;
+            }*/
+
+            System.out.println("ISRC LINE 378: " + isrc);
+
+            String link = ("https://api.spotify.com/v1/search?q=isrc%3A"+ isrc + "&type=track&limit=50");
+
+            System.out.println("LINK LINE 382: " + link);
+
+            List<String> artistList = null;
+            try {
+                artistList = modelCopy.getIsrcLabels(link);
+            } catch (CustomException.ResponseCodeException e) {
+                e.printStackTrace();
+            } catch (CustomException e) {
+                e.printStackTrace();
+            }
+
+
+            for (String listArtist : artistList) {
+                this.resultsTextArea.appendText(listArtist);
+            }
+        }
+
+
 
     }
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() {
-        assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
-        assert nameTextArea != null : "fx:id=\"nameTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
-        assert checkNameButton != null : "fx:id=\"checkNameButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
-        assert relatedArtistsButton != null : "fx:id=\"relatedArtistsButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
-        assert clearButton != null : "fx:id=\"clearButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
-        assert resultsTextArea != null : "fx:id=\"resultsTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
-        assert backButtonId != null : "fx:id=\"backButtonId\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
 
-    }
-
-    public void setModel(Model model) {
-        this.model = model;
-    }
-
-    private void displayExceptionDialog(Throwable ex, String exceptionMessage) {
-
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Exception Dialog");
-        alert.setHeaderText("Exception");
-        alert.setContentText(exceptionMessage);
-
-        // Create expandable Exception.
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        ex.printStackTrace(pw);
-        String exceptionText = sw.toString();
-
-        Label label = new Label("The exception stacktrace was:");
-
-        TextArea textArea = new TextArea(exceptionText);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
-        expContent.add(textArea, 0, 1);
-
-        // Set expandable Exception into the dialog pane.
-        alert.getDialogPane().setExpandableContent(expContent);
-        alert.showAndWait();
-    }
 
 
     @FXML
@@ -484,5 +474,172 @@ public class SpotyCheckArtistsNameIdController {
             }
 
         }
+    }
+
+    @FXML
+    void getCategoriesPlaylists(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+
+        List<String> categoriesList = new ArrayList<>();
+
+        Model modelCopy = new Model();
+
+        String link = ("https://api.spotify.com/v1/browse/categories");
+
+        try {
+            categoriesList = modelCopy.getCategories(link);
+        } catch (CustomException.ResponseCodeException e) {
+            e.printStackTrace();
+        } catch (CustomException e) {
+            e.printStackTrace();
+        }
+
+
+        List<String> categoriesPlaylists = null;
+
+            try {
+                categoriesPlaylists = modelCopy.getCategoriesPlaylists(categoriesList);
+            } catch (CustomException.ResponseCodeException e) {
+                e.printStackTrace();
+            } catch (CustomException e) {
+                e.printStackTrace();
+            }
+
+
+
+        for (String categoriesPlaylistsList : categoriesPlaylists) {
+            this.resultsTextArea.appendText(categoriesPlaylistsList);
+        }
+
+
+
+
+    }
+
+    @FXML
+    void getFeaturedPlaylists(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+
+        String link = ("https://api.spotify.com/v1/browse/featured-playlists");
+
+        Model modelCopy = new Model();
+
+        List<String> featuredPlaylists = null;
+
+        System.out.println("LINK LINE 495: " + link);
+
+        try {
+            featuredPlaylists = modelCopy.getFeaturedPlaylists(link);
+        } catch (CustomException.ResponseCodeException e) {
+            e.printStackTrace();
+        } catch (CustomException e) {
+            e.printStackTrace();
+        }
+
+
+        for (String listArtist : featuredPlaylists) {
+            this.resultsTextArea.appendText(listArtist);
+        }
+    }
+
+
+    @FXML
+    void getUsersPlaylist(ActionEvent event) {
+
+        this.resultsTextArea.clear();
+        if (this.nameTextArea.getText().isEmpty()) {
+            displayErrorMessage("Make sure to add a list of ISRC!");
+        }
+
+        scanner = new Scanner(nameTextArea.getText());
+
+        Model modelCopy = new Model();
+
+        while (scanner.hasNextLine()) {
+
+            String user = scanner.nextLine();
+
+            String link = ("https://api.spotify.com/v1/users/" + user + "/playlists");
+
+            List<String> artistList = null;
+            try {
+                artistList = modelCopy.getUsersPlaylists(link);
+            } catch (CustomException.ResponseCodeException e) {
+                e.printStackTrace();
+            } catch (CustomException e) {
+                e.printStackTrace();
+            }
+
+
+            for (String listArtist : artistList) {
+                this.resultsTextArea.appendText(listArtist);
+            }
+        }
+
+
+
+    }
+
+
+
+    public void displayErrorMessage(String textMessage) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning!");
+        alert.setContentText(textMessage);
+        alert.showAndWait();
+        return;
+
+    }
+
+    @FXML // This method is called by the FXMLLoader when initialization is complete
+    void initialize() {
+        assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert nameTextArea != null : "fx:id=\"nameTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert checkNameButton != null : "fx:id=\"checkNameButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert relatedArtistsButton != null : "fx:id=\"relatedArtistsButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert clearButton != null : "fx:id=\"clearButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert resultsTextArea != null : "fx:id=\"resultsTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert backButtonId != null : "fx:id=\"backButtonId\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    private void displayExceptionDialog(Throwable ex, String exceptionMessage) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Exception Dialog");
+        alert.setHeaderText("Exception");
+        alert.setContentText(exceptionMessage);
+
+        // Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+        alert.showAndWait();
     }
 }

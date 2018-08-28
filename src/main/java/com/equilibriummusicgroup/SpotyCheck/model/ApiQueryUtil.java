@@ -3,10 +3,7 @@ package com.equilibriummusicgroup.SpotyCheck.model;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -114,13 +111,15 @@ public class ApiQueryUtil {
 
     }
 
-    private static String getToken() {
+    private String getToken() {
         String json_response = "";
 
         try {
             URL url = new URL("https://accounts.spotify.com/api/token");
             HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-            String basicAuth = "Basic NTM0NzYyN2JkYzQ0NGEwYzg3ZWI4NGFkZTkwMTc0YzI6ZTBkYTNhNjc4Mjk5NDE5ODgwMjFkNzFmNDI0MTJjNmE=";
+            String apiKey = readFile("/Users/equilibrium/IdeaProjects/SpotyCheck/api_key.txt");
+            System.out.println("APIKEY: " + apiKey);
+            String basicAuth = "Basic "+ apiKey;
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("POST");
             httpCon.setRequestProperty("Authorization", basicAuth);
@@ -159,6 +158,23 @@ public class ApiQueryUtil {
         System.out.println("TOKEN: " + token.get("access_token").getAsString());
         return token.get("access_token").getAsString();
 
+    }
+
+    public String readFile(String fileName) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        try {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            return sb.toString();
+        } finally {
+            br.close();
+        }
     }
 
 }

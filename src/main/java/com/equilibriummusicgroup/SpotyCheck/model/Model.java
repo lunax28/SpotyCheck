@@ -184,6 +184,14 @@ public class Model {
 
         JsonObject artistsObj = jsonResponse.get("artists").getAsJsonObject();
 
+        int total = artistsObj.get("total").getAsInt();
+
+        if(total>50){
+            System.out.println("TOTAL > 50!!");
+            throw new CustomException("TOTAL > 50");
+
+        }
+
         JsonArray artistsArray = artistsObj.get("items").getAsJsonArray();
 
 
@@ -379,6 +387,253 @@ public class Model {
 
         return artistList;
 
+
+
+    }
+
+    public List<String> getIsrcLabels(String link) throws CustomException.ResponseCodeException, CustomException {
+
+        List<String> albumLabelList = new ArrayList<>();
+        JsonObject jsonResponse = apiQuery.getJson(link);
+
+        JsonObject tracksObj = jsonResponse.get("tracks").getAsJsonObject();
+
+        JsonArray tracksArray = tracksObj.get("items").getAsJsonArray();
+
+        //String nextLink = tracksObj.get("next").getAsString();
+
+
+        for (int i = 0; i < tracksArray.size(); i++) {
+
+            JsonObject nextTrack = tracksArray.get(i).getAsJsonObject();
+
+            JsonObject albumTrackObj = nextTrack.get("album").getAsJsonObject();
+
+            String idAlbum = albumTrackObj.get("id").getAsString();
+
+
+            String linkAlbum = ("https://api.spotify.com/v1/albums/"+ idAlbum);
+            JsonObject jsonResponseAlbum = apiQuery.getJson(linkAlbum);
+
+            String albumLabel = jsonResponseAlbum.get("label").getAsString();
+
+
+            albumLabelList.add(albumLabel + ";" + idAlbum + System.lineSeparator());
+
+        }
+
+
+        /*JsonObject jsonResponseNext = apiQuery.getJson(nextLink);
+
+        tracksObj = jsonResponse.get("tracks").getAsJsonObject();
+
+        tracksArray = tracksObj.get("items").getAsJsonArray();
+
+        for (int i = 0; i < tracksArray.size(); i++) {
+
+            JsonObject nextTrack = tracksArray.get(i).getAsJsonObject();
+
+            JsonObject albumTrackObj = nextTrack.get("album").getAsJsonObject();
+
+            String idAlbum = albumTrackObj.get("id").getAsString();
+
+
+            String linkAlbum = ("https://api.spotify.com/v1/albums/"+ idAlbum);
+            JsonObject jsonResponseAlbum = apiQuery.getJson(linkAlbum);
+
+            String albumLabel = jsonResponseAlbum.get("label").getAsString();
+
+
+            albumLabelList.add(albumLabel + ";" + idAlbum + System.lineSeparator());
+
+        }*/
+
+
+
+        return albumLabelList;
+
+
+    }
+
+
+
+    public List<String> getFeaturedPlaylists(String link) throws CustomException.ResponseCodeException, CustomException {
+
+
+        List<String> featuredPlaylistsList = new ArrayList<>();
+
+        JsonObject jsonResponse = apiQuery.getJson(link);
+
+        JsonObject playlistsObj = jsonResponse.get("playlists").getAsJsonObject();
+
+        JsonArray playlistsArray = playlistsObj.get("items").getAsJsonArray();
+
+        //String nextLink = tracksObj.get("next").getAsString();
+
+
+        for (int i = 0; i < playlistsArray.size(); i++) {
+
+            JsonObject nextPlaylist = playlistsArray.get(i).getAsJsonObject();
+
+            String uri = nextPlaylist.get("uri").getAsString();
+
+            String name = nextPlaylist.get("name").getAsString();
+
+            JsonObject ownerObj = nextPlaylist.get("owner").getAsJsonObject();
+
+            String ownerUri = ownerObj.get("uri").getAsString();
+
+
+            featuredPlaylistsList.add(name + ";" + uri + ownerUri + System.lineSeparator());
+
+        }
+
+        return featuredPlaylistsList;
+
+
+
+
+    }
+
+    public List<String> getCategories(String link) throws CustomException.ResponseCodeException, CustomException {
+
+        List<String> categoriesList = new ArrayList<>();
+
+        JsonObject jsonResponse = apiQuery.getJson(link);
+
+        JsonObject categoriesObj = jsonResponse.get("categories").getAsJsonObject();
+
+        JsonArray categoriesArray = categoriesObj.get("items").getAsJsonArray();
+
+        //String nextLink = tracksObj.get("next").getAsString();
+
+
+        for (int i = 0; i < categoriesArray.size(); i++) {
+
+            JsonObject nextCategory = categoriesArray.get(i).getAsJsonObject();
+
+            String id = nextCategory.get("id").getAsString();
+
+
+            categoriesList.add(id);
+
+        }
+
+        return categoriesList;
+
+    }
+
+    public List<String> getCategoriesPlaylists(List<String> categoriesList) throws CustomException.ResponseCodeException, CustomException {
+
+
+        List<String> categoriesPlaylistsList = new ArrayList<>();
+
+
+        for (String categoryId : categoriesList) {
+
+            if(categoryId.equals("popindo")){
+                System.out.println("POPINDO SPOTTED!!");
+                continue;
+            }
+
+
+            System.out.println("category ID: "+ categoryId);
+
+            String link = ("https://api.spotify.com/v1/browse/categories/"+ categoryId + "/playlists?limit=50");
+                          //https://api.spotify.com/v1/browse/categories/toplists/playlists
+
+            System.out.println("LINK LINE 531: " + link);
+
+            JsonObject jsonResponse = apiQuery.getJson(link);
+
+            JsonObject playlistsObj = jsonResponse.get("playlists").getAsJsonObject();
+
+            JsonArray categoriesArray = playlistsObj.get("items").getAsJsonArray();
+
+            //String nextLink = tracksObj.get("next").getAsString();
+
+
+            for (int i = 0; i < categoriesArray.size(); i++) {
+
+                JsonObject nextCategoryPlaylist = categoriesArray.get(i).getAsJsonObject();
+
+                String name = nextCategoryPlaylist.get("name").getAsString();
+
+                String uri = nextCategoryPlaylist.get("uri").getAsString();
+
+
+                categoriesPlaylistsList.add(name + ";" + uri + System.lineSeparator());
+
+            }
+
+
+
+
+        }
+
+
+
+        return categoriesPlaylistsList;
+
+
+
+    }
+
+    public List<String> getUsersPlaylists(String link) throws CustomException.ResponseCodeException, CustomException {
+
+        List<String> usersPlaylistList = new ArrayList<>();
+
+
+        int count = 0;
+
+        String nextLink = link;
+
+
+
+        while(count < 80){
+
+            JsonObject jsonResponse = apiQuery.getJson(nextLink);
+
+
+            if(checkNode(jsonResponse, "next")){
+                if(jsonResponse.get("next").isJsonNull()){
+                    System.out.println("NEXT LINK IS NULL OR EMPTY!!!");
+                    break;
+                } else{
+                    nextLink = jsonResponse.get("next").getAsString();
+                }
+            } else {
+                nextLink = null;
+                System.out.println("NO MORE NEXTLINK!!!!");
+            }
+
+            if(nextLink == null || nextLink.isEmpty()){
+                System.out.println("NEXT LINK IS NULL OR EMPTY!!!");
+                break;
+            }
+
+
+
+            System.out.println("nextLink: " + nextLink);
+
+            JsonArray userPlaylistsArray = jsonResponse.get("items").getAsJsonArray();
+
+            for (int i = 0; i < userPlaylistsArray.size(); i++) {
+
+                JsonObject nextPlaylist = userPlaylistsArray.get(i).getAsJsonObject();
+
+                String playlistName = nextPlaylist.get("name").getAsString();
+                String uri = nextPlaylist.get("uri").getAsString();
+
+                usersPlaylistList.add(playlistName + "; " + uri  + System.lineSeparator());
+
+            }
+
+            count++;
+
+        }
+
+        return usersPlaylistList;
 
 
     }

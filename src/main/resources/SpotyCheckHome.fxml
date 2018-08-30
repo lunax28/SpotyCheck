@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckHomeController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SpotyCheckHomeController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -67,8 +67,27 @@
                   </Button>
                </children>
                <VBox.margin>
-                  <Insets top="30.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="160.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="playlistsButton" cancelButton="true" defaultButton="true" mnemonicParsing="false" onAction="#changePlaylistsScene" prefHeight="60.0" prefWidth="89.0" text="PLAYLISTS">
+                     <HBox.margin>
+                        <Insets right="50.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="tracksButton" defaultButton="true" layoutX="266.0" layoutY="30.0" mnemonicParsing="false" onAction="#changeTracksScene" prefHeight="60.0" prefWidth="89.0" text="TRACKS">
+                     <HBox.margin>
+                        <Insets right="50.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="wipButton" defaultButton="true" disable="true" layoutX="310.0" layoutY="30.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="89.0" text="WIP">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
             </HBox>
          </children>
       </VBox>

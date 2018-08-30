@@ -97,7 +97,10 @@
                                 <Insets right="11.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="nameTextField" editable="false" prefHeight="27.0" prefWidth="524.0" />
+                        <TextField fx:id="nameTextField" editable="false" prefHeight="27.0" prefWidth="263.0">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin></TextField>
                     </children>
                     <VBox.margin>
                         <Insets bottom="10.0" />
@@ -110,7 +113,10 @@
                                 <Insets right="7.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="followersTextField" editable="false" prefHeight="27.0" prefWidth="108.0" />
+                        <TextField fx:id="followersTextField" editable="false" prefHeight="27.0" prefWidth="108.0">
+                     <HBox.margin>
+                        <Insets left="1.0" />
+                     </HBox.margin></TextField>
                     </children>
                     <VBox.margin>
                         <Insets bottom="10.0" />
@@ -120,7 +126,7 @@
                     <children>
                         <Label text="Popularity">
                             <HBox.margin>
-                                <Insets right="15.0" />
+                                <Insets right="5.0" />
                             </HBox.margin>
                         </Label>
                         <TextField fx:id="popularityTextField" editable="false" prefHeight="27.0" prefWidth="36.0">
@@ -133,7 +139,7 @@
                                 <Insets right="10.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="uriTextField" editable="false" layoutX="44.0" layoutY="10.0" prefHeight="27.0" prefWidth="297.0">
+                        <TextField fx:id="uriTextField" editable="false" layoutX="44.0" layoutY="10.0" prefHeight="27.0" prefWidth="378.0">
                             <HBox.margin>
                                 <Insets right="10.0" />
                             </HBox.margin>
@@ -147,10 +153,10 @@
                     <children>
                         <Label text="URL">
                             <HBox.margin>
-                                <Insets right="22.0" />
+                                <Insets right="40.0" />
                             </HBox.margin>
                         </Label>
-                        <TextField fx:id="urlTextField" editable="false" prefHeight="27.0" prefWidth="486.0">
+                        <TextField fx:id="urlTextField" editable="false" prefHeight="27.0" prefWidth="457.0">
                             <HBox.margin>
                                 <Insets right="10.0" />
                             </HBox.margin>

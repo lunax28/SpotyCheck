@@ -184,13 +184,13 @@ public class Model {
 
         JsonObject artistsObj = jsonResponse.get("artists").getAsJsonObject();
 
-        int total = artistsObj.get("total").getAsInt();
+        /*int total = artistsObj.get("total").getAsInt();
 
         if(total>50){
             System.out.println("TOTAL > 50!!");
             throw new CustomException("TOTAL > 50");
 
-        }
+        }*/
 
         JsonArray artistsArray = artistsObj.get("items").getAsJsonArray();
 
@@ -590,14 +590,14 @@ public class Model {
 
 
 
-        while(count < 80){
+        /*while(count < 80){
 
             JsonObject jsonResponse = apiQuery.getJson(nextLink);
 
 
             if(checkNode(jsonResponse, "next")){
                 if(jsonResponse.get("next").isJsonNull()){
-                    System.out.println("NEXT LINK IS NULL OR EMPTY!!!");
+                    System.out.println("NEXTLINK IS NULL OR EMPTY!!!");
                     break;
                 } else{
                     nextLink = jsonResponse.get("next").getAsString();
@@ -608,7 +608,7 @@ public class Model {
             }
 
             if(nextLink == null || nextLink.isEmpty()){
-                System.out.println("NEXT LINK IS NULL OR EMPTY!!!");
+                System.out.println("611 NEXT LINK IS NULL OR EMPTY!!!");
                 break;
             }
 
@@ -631,7 +631,58 @@ public class Model {
 
             count++;
 
-        }
+        }*/
+
+        JsonObject jsonResponse = null;
+
+
+
+        do {
+
+            jsonResponse = apiQuery.getJson(nextLink);
+
+
+            if(checkNode(jsonResponse, "next")){
+                if(jsonResponse.get("next").isJsonNull()){
+                    System.out.println("NEXTLINK IS NULL OR EMPTY!!!");
+                    break;
+                } else{
+                    nextLink = jsonResponse.get("next").getAsString();
+                }
+            } else {
+                nextLink = null;
+                System.out.println("NO MORE NEXTLINK!!!!");
+            }
+
+            if(nextLink == null || nextLink.isEmpty()){
+                System.out.println("611 NEXT LINK IS NULL OR EMPTY!!!");
+                break;
+            }
+
+
+
+            System.out.println("nextLink: " + nextLink);
+
+            JsonArray userPlaylistsArray = jsonResponse.get("items").getAsJsonArray();
+
+            for (int i = 0; i < userPlaylistsArray.size(); i++) {
+
+                JsonObject nextPlaylist = userPlaylistsArray.get(i).getAsJsonObject();
+
+                String playlistName = nextPlaylist.get("name").getAsString();
+                String uri = nextPlaylist.get("uri").getAsString();
+
+                usersPlaylistList.add(playlistName + "; " + uri  + System.lineSeparator());
+
+            }
+
+            count++;
+
+
+        } while (!jsonResponse.get("next").isJsonNull());
+
+
+        System.out.println("COUNT: " + count);
 
         return usersPlaylistList;
 

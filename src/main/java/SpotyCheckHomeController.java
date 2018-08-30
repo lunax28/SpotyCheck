@@ -35,6 +35,15 @@ public class SpotyCheckHomeController {
     @FXML // fx:id="upcButton"
     private Button lookupButton; // Value injected by FXMLLoader
 
+    @FXML // fx:id="playlistsButton"
+    private Button playlistsButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tracksButton"
+    private Button tracksButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="wipButton"
+    private Button wipButton; // Value injected by FXMLLoader
+
     @FXML
     void changeAlbumsScene(ActionEvent event) throws IOException {
 
@@ -83,6 +92,27 @@ public class SpotyCheckHomeController {
 
     }
 
+    @FXML
+    void changePlaylistsScene(ActionEvent event) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("spotyCheckPlaylists.fxml"));
+
+        Parent root = loader.load();
+        SpotyCheckPlaylists controller = loader.getController();
+        controller.setModel(this.model);
+
+        Stage stage = (Stage) lookupButton.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+
+    }
+
+    @FXML
+    void changeTracksScene(ActionEvent event) {
+
+    }
+
     public void setModel(Model model) {
         this.model = model;
     }
@@ -92,6 +122,9 @@ public class SpotyCheckHomeController {
         assert albumsButton != null : "fx:id=\"albumsButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
         assert artistsButton != null : "fx:id=\"artistsButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
         assert lookupButton != null : "fx:id=\"lookupButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
+        assert playlistsButton != null : "fx:id=\"playlistsButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
+        assert tracksButton != null : "fx:id=\"tracksButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
+        assert wipButton != null : "fx:id=\"wipButton\" was not injected: check your FXML file 'SpotyCheckHome.fxml'.";
 
     }
 }

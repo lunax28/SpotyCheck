@@ -40,8 +40,8 @@ public class SpotyCheckArtistsNameIdController {
     private Button relatedArtistsButton; // Value injected by FXMLLoader
 
 
-    @FXML // fx:id="nameTextArea"
-    private TextArea nameTextArea; // Value injected by FXMLLoader
+    @FXML // fx:id="inputTextArea"
+    private TextArea inputTextArea; // Value injected by FXMLLoader
 
     @FXML // fx:id="resultsTextArea"
     private TextArea resultsTextArea; // Value injected by FXMLLoader
@@ -59,16 +59,18 @@ public class SpotyCheckArtistsNameIdController {
 
     private List<String> artistIdList;
 
+    private List<String> upcList;
+
     @FXML
     void checkNameButton(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if (this.nameTextArea.getText().isEmpty()) {
+        if (this.inputTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of artists first!");
         }
 
 
-        scanner = new Scanner(nameTextArea.getText());
+        scanner = new Scanner(inputTextArea.getText());
 
         nameList = new ArrayList<>();
 
@@ -161,11 +163,11 @@ public class SpotyCheckArtistsNameIdController {
     @FXML
     void getSuggestions(ActionEvent event) {
         this.resultsTextArea.clear();
-        if (this.nameTextArea.getText().isEmpty()) {
+        if (this.inputTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of artists first!");
         }
 
-        scanner = new Scanner(nameTextArea.getText());
+        scanner = new Scanner(inputTextArea.getText());
 
         Model modelCopy = new Model();
 
@@ -222,7 +224,7 @@ public class SpotyCheckArtistsNameIdController {
 
     @FXML
     void clearButton(ActionEvent event) {
-        this.nameTextArea.clear();
+        this.inputTextArea.clear();
         this.resultsTextArea.clear();
 
     }
@@ -275,11 +277,11 @@ public class SpotyCheckArtistsNameIdController {
     void getRelatedArtists(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if (this.nameTextArea.getText().isEmpty()) {
+        if (this.inputTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of artists first!");
         }
 
-        scanner = new Scanner(nameTextArea.getText());
+        scanner = new Scanner(inputTextArea.getText());
 
         Model modelCopy = new Model();
 
@@ -316,11 +318,11 @@ public class SpotyCheckArtistsNameIdController {
     void getFollowers(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if (this.nameTextArea.getText().isEmpty()) {
+        if (this.inputTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of artists first!");
         }
 
-        scanner = new Scanner(nameTextArea.getText());
+        scanner = new Scanner(inputTextArea.getText());
 
         Model modelCopy = new Model();
 
@@ -357,11 +359,11 @@ public class SpotyCheckArtistsNameIdController {
     void getIsrcLabels(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if (this.nameTextArea.getText().isEmpty()) {
+        if (this.inputTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of ISRC!");
         }
 
-        scanner = new Scanner(nameTextArea.getText());
+        scanner = new Scanner(inputTextArea.getText());
 
         Model modelCopy = new Model();
 
@@ -410,12 +412,12 @@ public class SpotyCheckArtistsNameIdController {
         this.resultsTextArea.clear();
 
         //check also whether there are UPCs!!! whitespaces may still be present
-        if (this.nameTextArea.getText().isEmpty()) {
+        if (this.inputTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of Artists' IDs first!");
             return;
         }
 
-        scanner = new Scanner(nameTextArea.getText());
+        scanner = new Scanner(inputTextArea.getText());
 
         //a list containing several endpoints in case the user has inserted more than 50 IDs
         List<StringBuilder> linkList = new ArrayList<>();
@@ -549,11 +551,11 @@ public class SpotyCheckArtistsNameIdController {
     void getUsersPlaylist(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if (this.nameTextArea.getText().isEmpty()) {
+        if (this.inputTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of ISRC!");
         }
 
-        scanner = new Scanner(nameTextArea.getText());
+        scanner = new Scanner(inputTextArea.getText());
 
         Model modelCopy = new Model();
 
@@ -582,6 +584,91 @@ public class SpotyCheckArtistsNameIdController {
 
     }
 
+    @FXML
+    void checkAlbum(ActionEvent event) throws IOException {
+
+        this.resultsTextArea.clear();
+        if (this.inputTextArea.getText().isEmpty()) {
+            displayErrorMessage("Make sure to add a list of UPCs first!");
+        }
+
+        scanner = new Scanner(inputTextArea.getText());
+        upcList = new ArrayList<>();
+
+        while (scanner.hasNextLine()) {
+
+            String upc = scanner.nextLine();
+            if (upc.matches("[0-9]{13}") || upc.matches("[0-9]{12}")) {
+                upcList.add(upc);
+            } else {
+                displayErrorMessage("UPC format error!");
+                return;
+            }
+        }
+
+        Task<List<String>> task = new Task<List<String>>() {
+
+            @Override
+            protected List<String> call() throws Exception {
+
+                disableButtons();
+                updateProgress(-1, -1);
+
+                List<String> upcResult = new ArrayList<>();
+                int result = 0;
+
+                for (String st : upcList) {
+                    System.out.println(st);
+
+                    Model modelCopy = new Model();
+
+                    String link = ("https://api.spotify.com/v1/search?q=upc:" + st + "&type=album");
+                    System.out.println("LINK: " + link);
+
+//                    upcResult.add(81 + ", " + result + System.lineSeparator());
+
+                    result = modelCopy.getTotal(link);
+
+                    upcResult.add(st + ", " + result + System.lineSeparator());
+                }
+                updateProgress(1, 1);
+                return upcResult;
+            }
+        };
+
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                List<String> resultList = task.getValue();
+                for (String st : resultList) {
+                    resultsTextArea.appendText(st);
+                }
+                //resultsTextArea.appendText(resultList.toString());
+                //outputTextField.setText("SUCCESS!");
+                enableButtons();
+            }
+        });
+
+        task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                Throwable ex = task.getException();
+                ex.printStackTrace();
+                String message = ex.getMessage();
+                System.out.println("LINE 142 MESSAGE: " + message);
+                displayExceptionDialog(ex, "Response code error!");
+                enableButtons();
+            }
+        });
+
+        progressBar.progressProperty().bind(task.progressProperty());
+
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
+
+    }
+
 
 
     public void displayErrorMessage(String textMessage) {
@@ -596,7 +683,7 @@ public class SpotyCheckArtistsNameIdController {
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
-        assert nameTextArea != null : "fx:id=\"nameTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
+        assert inputTextArea != null : "fx:id=\"inputTextArea\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
         assert checkNameButton != null : "fx:id=\"checkNameButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
         assert relatedArtistsButton != null : "fx:id=\"relatedArtistsButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";
         assert clearButton != null : "fx:id=\"clearButton\" was not injected: check your FXML file 'spotyCheckArtistsNameId.fxml'.";

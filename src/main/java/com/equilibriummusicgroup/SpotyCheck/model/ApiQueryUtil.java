@@ -120,6 +120,7 @@ public class ApiQueryUtil {
             String apiKey = readFile("/Users/equilibrium/IdeaProjects/SpotyCheck/api_key.txt");
             System.out.println("APIKEY: " + apiKey);
             String basicAuth = "Basic "+ apiKey;
+            System.out.println("basicAuth: " + basicAuth);
             httpCon.setDoOutput(true);
             httpCon.setRequestMethod("POST");
             httpCon.setRequestProperty("Authorization", basicAuth);
@@ -168,7 +169,7 @@ public class ApiQueryUtil {
 
             while (line != null) {
                 sb.append(line);
-                sb.append("\n");
+                //sb.append("\n");
                 line = br.readLine();
             }
             return sb.toString();

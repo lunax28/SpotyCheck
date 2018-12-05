@@ -28,6 +28,15 @@ public class SpotyCheckPlaylists {
     @FXML
     private Model model;
 
+    @FXML // fx:id="playlistUserIdTextField"
+    private TextField playlistUserIdTextField; // Value injected by FXMLLoader
+
+    @FXML // fx:id="getUsersPlaylistsButton"
+    private Button getUsersPlaylistsButton; // Value injected by FXMLLoader
+
+    @FXML // fx:id="playlistsIdTextArea"
+    private TextArea playlistsIdTextArea; // Value injected by FXMLLoader
+
     @FXML // fx:id="userTextField"
     private TextField userTextField; // Value injected by FXMLLoader
 
@@ -39,9 +48,6 @@ public class SpotyCheckPlaylists {
 
     @FXML // fx:id="progressBar"
     private ProgressBar progressBar; // Value injected by FXMLLoader
-
-    @FXML // fx:id="nameTextArea"
-    private TextArea inputTextArea; // Value injected by FXMLLoader
 
     @FXML // fx:id="getFollowersButton"
     private Button getFollowersButton; // Value injected by FXMLLoader
@@ -81,11 +87,11 @@ public class SpotyCheckPlaylists {
     void getFollowers(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if (this.inputTextArea.getText().isEmpty()) {
+        if (this.playlistsIdTextArea.getText().isEmpty()) {
             displayErrorMessage("Make sure to add a list of UPCs first!");
         }
 
-        scanner = new Scanner(inputTextArea.getText());
+        scanner = new Scanner(playlistsIdTextArea.getText());
         playlistIdList = new ArrayList<>();
 
         while (scanner.hasNextLine()) {
@@ -128,11 +134,11 @@ public class SpotyCheckPlaylists {
     void getUsersPlaylist(ActionEvent event) {
 
         this.resultsTextArea.clear();
-        if (this.userTextField.getText().isEmpty()) {
+        if (this.playlistUserIdTextField.getText().isEmpty()) {
             displayErrorMessage("Make sure to add USER ID!");
         }
 
-        scanner = new Scanner(userTextField.getText());
+        scanner = new Scanner(playlistUserIdTextField.getText());
 
         Model modelCopy = new Model();
 
@@ -176,8 +182,9 @@ public class SpotyCheckPlaylists {
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
-        assert progressBar != null : "fx:id=\"progressBar\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";
-        assert inputTextArea != null : "fx:id=\"nameTextArea\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";
+        assert playlistUserIdTextField != null : "fx:id=\"playlistUserIdTextField\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";
+        assert getUsersPlaylistsButton != null : "fx:id=\"getUsersPlaylistsButton\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";
+        assert playlistsIdTextArea != null : "fx:id=\"playlistsIdTextArea\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";
         assert getFollowersButton != null : "fx:id=\"getFollowersButton\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";
         assert clearButton != null : "fx:id=\"clearButton\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";
         assert resultsTextArea != null : "fx:id=\"resultsTextArea\" was not injected: check your FXML file 'spotyCheckPlaylists.fxml'.";

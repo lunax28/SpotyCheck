@@ -84,12 +84,13 @@ public class Model {
         JsonObject jsonResponse = null;
         try {
             jsonResponse = apiQuery.getJson(link);
+            System.out.println("PLAYLISTS JSON RESPONSE: " + jsonResponse.toString());
         } catch (CustomException e) {
             e.printStackTrace();
         } catch (CustomException.ResponseCodeException e) {
             e.printStackTrace();
         }
-        System.out.println("PLAYLISTS JSON RESPONSE: " + jsonResponse.toString());
+
 
         JsonObject followersObject = jsonResponse.getAsJsonObject("followers");
 

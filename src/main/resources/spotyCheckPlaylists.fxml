@@ -44,7 +44,7 @@
             <children>
             <HBox prefHeight="27.0" prefWidth="245.0">
                <children>
-                  <TextField fx:id="userTextField" promptText="User ID" />
+                  <TextField fx:id="playlistUserIdTextField" promptText="User ID" />
                   <Button fx:id="getUsersPlaylistsButton" mnemonicParsing="false" onAction="#getUsersPlaylist" prefHeight="27.0" prefWidth="69.0" text="GET">
                      <HBox.margin>
                         <Insets left="25.0" />
@@ -52,7 +52,7 @@
                   </Button>
                </children>
             </HBox>
-                <TextArea fx:id="nameTextArea" prefHeight="360.0" prefWidth="227.0" promptText="Playlists IDs">
+                <TextArea fx:id="playlistsIdTextArea" prefHeight="360.0" prefWidth="227.0" promptText="Playlists IDs">
                     <VBox.margin>
                         <Insets top="15.0" />
                     </VBox.margin>
